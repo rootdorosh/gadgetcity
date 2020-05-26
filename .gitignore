@@ -1,0 +1,10 @@
+/vendor
+MadelineProto.log
+composer.lock
+index.madeline
+index.madeline.lock
+madeline.phar
+madeline.phar.version
+MadelineProto.log
+session.madeline
+session.madeline.lock
