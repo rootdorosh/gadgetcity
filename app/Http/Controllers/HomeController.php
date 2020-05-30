@@ -22,6 +22,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        (new ParserService)->run();
+        //(new ParserService)->run();
     }
 }
