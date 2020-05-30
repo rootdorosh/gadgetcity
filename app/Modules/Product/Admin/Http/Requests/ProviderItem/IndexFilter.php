@@ -89,7 +89,7 @@ class IndexFilter extends BaseFilter
         }
 
         if ($this->provider_id !== null) {
-            $query->where("product_providers_items.provider_id", "like", "%{$this->provider_id}%");
+            $query->where("product_providers_items.provider_id", $this->provider_id);
         }
 
         if ($this->title !== null) {
@@ -105,7 +105,7 @@ class IndexFilter extends BaseFilter
         }
 
         if ($this->status !== null) {
-            $query->where("product_providers_items.status", "like", "%{$this->status}%");
+            $query->where("product_providers_items.status", $this->status);
         }
 
         return $query;
