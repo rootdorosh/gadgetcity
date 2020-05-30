@@ -1,0 +1,47 @@
+.help-block {
+    display: none;
+}
+
+.has-error .help-block {
+    display: block;
+    color: #ff0000;
+}
+
+.has-error input,
+.has-error select,
+.has-error textarea,
+.has-error .select2-selection {
+    border-color: #ff0000;
+}
+
+.nav-item .error {
+    color: #ff0000 !important;
+}
+
+.form-group label{
+	font-size: 12px !important;
+}
+
+.form-group .help-block{
+	font-size: 12px !important;
+}
+
+.agrid thead {
+	font-size: 12px !important;
+}
+
+.hidden {
+    display: none;
+}
+
+.js-price table tr {
+    background-color: inherit !important;
+    border: none;
+}
+.js-price table tr td{
+    height: 10px;
+    padding: 0;
+    margin: 0;
+    padding-right: 5px;
+    border: none;
+}
