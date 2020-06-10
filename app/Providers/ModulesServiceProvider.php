@@ -13,7 +13,7 @@ class ModulesServiceProvider extends ServiceProvider
     {
         foreach (CoreHelper::getModules() as $module) {
             $modulePath = app_path() . '/Modules/' . $module . '/';
-            
+
             //view('user.admin::role.index')
             if (is_dir($modulePath . '/Admin/Views')) {
                 $this->loadViewsFrom($modulePath .  'Admin/Views', $module . '.admin');
@@ -25,18 +25,18 @@ class ModulesServiceProvider extends ServiceProvider
             if (is_dir($modulePath .  '/Database/migrations')) {
                 $this->loadMigrationsFrom($modulePath . '/Database/migrations');
             }
-            
+
             if (is_dir($modulePath . '/Database/factories')) {
                 $this->registerEloquentFactoriesFrom($modulePath . '/Database/factories');
             }
-        
+
             //trans('module::messages.welcome')
             if (is_dir($modulePath . '/Resources/lang')) {
-                $this->loadTranslationsFrom($modulePath . '/Resources/lang', Str::snake($module));
+                $this->loadTranslationsFrom($modulePath . '/Resources/lang', Str::camel($module));
             }
         }
     }
-    
+
     /**
      * Register factories.
      *
@@ -46,11 +46,11 @@ class ModulesServiceProvider extends ServiceProvider
     protected function registerEloquentFactoriesFrom(string $path)
     {
         $this->app->make(EloquentFactory::class)->load($path);
-    }    
+    }
 
     public function register()
     {
-        
+
     }
 
 }
