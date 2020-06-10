@@ -27,6 +27,10 @@ class ICentrUA implements IProcessor
                 continue;
             }
 
+            if (substr_count($line, 'XSM 256 Gray/Silver')) {
+                dd($line);
+            }
+
             // ——-MacBook Pro 13”——-
             if (preg_match('/\—\—\-(.*?)\—\—\-/', $line, $match)) {
                 $groupTitle = $match[1];
@@ -45,8 +49,20 @@ class ICentrUA implements IProcessor
                         'price' => $match[1],
                     ];
                 }
+            // XSM 256 Gray/Silver  950-1030$
+            } else if (preg_match('/-{1,10}\$/', $line, $match)) {
+                $title = str_replace($match[0], '', $line);
+                if ($groupTitle) {
+                    $title  = $groupTitle . ' ' . $title;
+                }
 
-                //dd($match);
+                $title = trim($title);
+                if ($title !== '') {
+                    $products[] = [
+                        'title' => $title,
+                        'price' => $match[1],
+                    ];
+                }
             }
         }
         //dd($products);

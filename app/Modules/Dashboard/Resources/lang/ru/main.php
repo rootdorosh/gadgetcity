@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'remind_password' => 'Напоминание пароля',
+    'remind_password' => 'Remind password',
 ];

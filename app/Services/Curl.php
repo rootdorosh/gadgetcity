@@ -10,8 +10,8 @@ class Curl
         $cache = !empty($params['cache']) ? $params['cache'] : true;
         $key = md5($url) . '_';
         $time = $cache ? (60 * 60 * 24) : 1;
-        
-        return Cache::remember($key, $time, function() use ($url) {
+
+        //return Cache::remember($key, $time, function() use ($url) {
             if (!empty($params['post']) && is_array($params['post'])) {
                 $params['post'] = http_build_query($params['post']);
             }
@@ -20,7 +20,9 @@ class Curl
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36');
-            
+            curl_setopt($ch, CURLOPT_USERAGENT, '\'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36\'');
+
+
             // откуда пришли на эту страницу
             if (empty($params['ref'])) {
                 $params['ref'] = $url;
@@ -42,7 +44,7 @@ class Curl
             $result = trim($result);
 
             return $result;
-        });        
+        //});
     }
 
 }

@@ -141,7 +141,13 @@ class ProductController extends AdminController
     {
         $data = [];
         $q = trim(request()->get('q'));
-        foreach (Product::where('title', 'like', "%$q%")->limit(20)->get() as $product) {
+
+        $query = Product::query();
+        foreach (explode(' ', $q) as $text) {
+            $query->where('title', 'like', "%$text%");
+        }
+
+        foreach ($query->limit(20)->get() as $product) {
             $data[] = [
                 'id' => $product->id,
                 'title' => $product->title,

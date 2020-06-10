@@ -93,7 +93,11 @@ class IndexFilter extends BaseFilter
         }
 
         if ($this->title !== null) {
-            $query->where("product_providers_items.title", "like", "%{$this->title}%");
+            $titles = explode(' ', $this->title);
+            foreach ($titles as $title) {
+                $query->where("product_providers_items.title", "like", "%{$title}%");
+            }
+
         }
 
         if ($this->price !== null) {

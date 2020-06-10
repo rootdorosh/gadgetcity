@@ -8,7 +8,8 @@ use App\Services\Curl;
 use App\Modules\Product\Models\{
     Product,
     Provider,
-    ProviderItem
+    ProviderItem,
+    Price
 };
 use App\Services\Parser\Processors\IProcessor;
 use DB;
@@ -24,8 +25,13 @@ class ParserService
      */
     public function run() : void
     {
-        //DB::statement('DELETE FROM product_providers_items');
+        DB::statement('DELETE FROM product_providers_items');
 
+        $this->parseProvider(Provider::where('pid', 'iPeople_UA')->first());
+        $this->parseProvider(Provider::where('pid', 'iDesireKH')->first());
+        $this->parseProvider(Provider::where('pid', 'optomiphone')->first());
+        $this->parseProvider(Provider::where('pid', 'appteka')->first());
+        $this->parseProvider(Provider::where('pid', 'wearefriendly')->first());
         $this->parseProvider(Provider::where('pid', 'imonolit')->first());
         $this->parseProvider(Provider::where('pid', 'iCentr_UA')->first());
     }
@@ -87,6 +93,11 @@ class ParserService
         $mapProcessors = [
             'iCentr_UA' => 'ICentrUA',
             'imonolit' => 'Imonolit',
+            'wearefriendly' => 'WeareFriendly',
+            'appteka' => 'Appteka',
+            'optomiphone' => 'OptomIPhone',
+            'iDesireKH' => 'IDesireKH',
+            'iPeople_UA' => 'IPeopleUA',
         ];
         $clsProcessor = isset($mapProcessors[$provider->pid]) ?
             "App\Services\Parser\Processors\\" . $mapProcessors[$provider->pid]
@@ -116,8 +127,6 @@ class ParserService
      */
     public function postParse(IProcessor $processor, string $post): array
     {
-        echo $post . "\n\n";
-
         return $processor->parse($post);
     }
 
@@ -128,12 +137,12 @@ class ParserService
     public function getChannelPosts(Provider $provider) : array
     {
         $data = [];
-        $url = "https://tg.i-c-a.su/rss/$provider->pid?limit=100";
+        $url = "http://88.198.157.69:9000/index.php?channel=$provider->pid";
         $xml = simplexml_load_string(Curl::getPage($url));
-        foreach ($xml->channel->item as $item) {
+        foreach ($xml->messages->message as $item) {
             $data[] = [
-                'content' => (string) $item->description,
-                'guid' => (int)Str::afterLast($item->guid, '/'),
+                'content' => (string) $item->content,
+                'guid' => (int) $item->id,
             ];
         }
 
