@@ -25,7 +25,7 @@ class ParserService
      */
     public function run() : void
     {
-        DB::statement('DELETE FROM product_providers_items');
+        //DB::statement('DELETE FROM product_providers_items');
 
         $this->parseProvider(Provider::where('pid', 'iPeople_UA')->first());
         $this->parseProvider(Provider::where('pid', 'iDesireKH')->first());
