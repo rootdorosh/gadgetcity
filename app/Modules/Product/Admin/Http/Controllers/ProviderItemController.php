@@ -42,8 +42,6 @@ class ProviderItemController extends AdminController
      */
     public function index(IndexFilter $modelFilter)
     {
-        dd(app()->getLocale());
-
         if ($modelFilter->ajax()) {
             return $modelFilter->getData();
         }
