@@ -52,7 +52,7 @@ class ParserService
 
         foreach ($products as $product) {
 
-            if (strlen($product['title']) > 255) {
+            if (empty($product['title']) || strlen($product['title']) > 255) {
                 continue;
             }
 
