@@ -52,6 +52,10 @@ class ParserService
 
         foreach ($products as $product) {
 
+            if (strlen($product['title']) > 255) {
+                continue;
+            }
+
             $providerItem = ProviderItem::where('provider_id', $provider->id)
                 ->where('title', $product['attributes']['title'])
                 ->first();
