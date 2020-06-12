@@ -27,6 +27,11 @@ class ParserService
     {
         //DB::statement('DELETE FROM product_providers_items');
 
+        $this->parseProvider(Provider::where('pid', 'ByryndychokApple')->first());
+        $this->parseProvider(Provider::where('pid', 'MrFixUa')->first());
+        $this->parseProvider(Provider::where('pid', 'restarttradein')->first());
+        $this->parseProvider(Provider::where('pid', 'ilovephoneopt')->first());
+        $this->parseProvider(Provider::where('pid', 'applezt')->first());
         $this->parseProvider(Provider::where('pid', 'iPeople_UA')->first());
         $this->parseProvider(Provider::where('pid', 'iDesireKH')->first());
         $this->parseProvider(Provider::where('pid', 'optomiphone')->first());
@@ -98,6 +103,11 @@ class ParserService
             'optomiphone' => 'OptomIPhone',
             'iDesireKH' => 'IDesireKH',
             'iPeople_UA' => 'IPeopleUA',
+            'applezt' => 'Applezt',
+            'ilovephoneopt' => 'ILovePhoneOpt',
+            'restarttradein' => 'RestartTradeIn',
+            'MrFixUa' => 'MrFixUa',
+            'ByryndychokApple' => 'ByryndychokApple',
         ];
         $clsProcessor = isset($mapProcessors[$provider->pid]) ?
             "App\Services\Parser\Processors\\" . $mapProcessors[$provider->pid]
