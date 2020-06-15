@@ -4,9 +4,9 @@ namespace App\Modules\Product\Admin\Http\Controllers;
 
 use App\Base\AdminController;
 use App\Modules\Product\Models\Product;
+use App\Modules\Product\Models\ProductProviderPrice;
 use App\Modules\Product\Services\Crud\ProviderItemCrudService;
 use App\Modules\Product\Models\ProviderItem;
-use App\Modules\Product\Models\Price;
 use App\Modules\Product\Admin\Http\Requests\ProviderItem\{
     IndexFilter,
     FormRequest,
@@ -150,10 +150,10 @@ class ProviderItemController extends AdminController
 
         $attrs = [
             'product_id' => $providerItem->product_id,
-            'provider_id' => $providerItem->provider_id,
+            'provider_item_id' => $providerItem->id,
         ];
 
-        Price::updateOrCreate($attrs, array_merge($attrs, ['price' => $providerItem->price]));
+        ProductProviderPrice::updateOrCreate($attrs, array_merge($attrs, ['price' => $providerItem->price]));
 
         return response()->json([
             'product_title' => $providerItem->product->title,

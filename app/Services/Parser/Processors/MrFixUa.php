@@ -48,8 +48,6 @@ class MrFixUa implements IProcessor
             }
         }
 
-        dump($products);
-
         return $products;
     }
 }

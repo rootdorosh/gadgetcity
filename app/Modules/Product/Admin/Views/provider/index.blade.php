@@ -43,8 +43,8 @@ $(function () {
 			{
 				name: 'is_active',
 				label: "{{ __('product::provider.fields.is_active') }}",
-				render: function(value) {
-					return aGridExt.renderYesNo(value);
+				render: function(row) {
+                 	return aGridExt.renderYesNo(row.is_active);
 				},
 				filter: {type: 'select'}
 			},

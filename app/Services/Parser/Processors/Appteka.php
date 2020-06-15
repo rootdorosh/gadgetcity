@@ -37,8 +37,6 @@ class Appteka implements IProcessor
             }
         }
 
-        dump($products);
-
         return $products;
     }
 }

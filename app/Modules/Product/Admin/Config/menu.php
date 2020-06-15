@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 return [
     [
@@ -26,6 +26,12 @@ return [
                 'route' => r('admin.product.provider-items.index'),
                 'icon' => 'fa-folder',
                 'permission' => 'product.provideritem.index',
+            ],
+            [
+                'title' => 'Report',
+                'route' => r('admin.product.price-report'),
+                'icon' => 'fa-folder',
+                'permission' => 'product.product.index',
             ],
         ],
     ],

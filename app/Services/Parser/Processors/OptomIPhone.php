@@ -31,8 +31,6 @@ class OptomIPhone implements IProcessor
             }
         }
 
-        dump($products);
-
         return $products;
     }
 }

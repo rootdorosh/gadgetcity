@@ -9,7 +9,7 @@ use App\Modules\Product\Models\{
     Product,
     Provider,
     ProviderItem,
-    Price
+    ProductProviderPrice
 };
 use App\Services\Parser\Processors\IProcessor;
 use DB;
@@ -25,20 +25,32 @@ class ParserService
      */
     public function run() : void
     {
-        //DB::statement('DELETE FROM product_providers_items');
+        DB::statement('DELETE FROM product_providers_items');
 
-        $this->parseProvider(Provider::where('pid', 'ByryndychokApple')->first());
-        $this->parseProvider(Provider::where('pid', 'MrFixUa')->first());
-        $this->parseProvider(Provider::where('pid', 'restarttradein')->first());
-        $this->parseProvider(Provider::where('pid', 'ilovephoneopt')->first());
-        $this->parseProvider(Provider::where('pid', 'applezt')->first());
-        $this->parseProvider(Provider::where('pid', 'iPeople_UA')->first());
-        $this->parseProvider(Provider::where('pid', 'iDesireKH')->first());
-        $this->parseProvider(Provider::where('pid', 'optomiphone')->first());
-        $this->parseProvider(Provider::where('pid', 'appteka')->first());
-        $this->parseProvider(Provider::where('pid', 'wearefriendly')->first());
-        $this->parseProvider(Provider::where('pid', 'imonolit')->first());
-        $this->parseProvider(Provider::where('pid', 'iCentr_UA')->first());
+        $providers = [
+            'ByryndychokApple',
+            'MrFixUa',
+            'restarttradein',
+            'ilovephoneopt',
+            'applezt',
+            'iPeople_UA',
+            'iDesireKH',
+            'optomiphone',
+            'appteka',
+            'wearefriendly',
+            'imonolit',
+            'iCentr_UA',
+        ];
+        $providerIds = Provider::where('pid', $providers)->pluck('id')->toArray();
+        DB::statement('UPDATE product_providers SET is_active = 0');
+        foreach ($providers as $pid) {
+            $provider = Provider::where('pid', $pid)->first();
+            $provider->is_active = 1;
+            $provider->save();
+
+            $this->parseProvider($provider);
+            dump($provider->pid);
+        }
     }
 
     /**
@@ -52,7 +64,7 @@ class ParserService
 
         foreach ($products as $product) {
 
-            if (empty($product['title']) || strlen($product['title']) > 255) {
+            if (empty($product['attributes']['title']) || strlen($product['attributes']['title']) > 255) {
                 continue;
             }
 
@@ -64,7 +76,7 @@ class ParserService
                 $productModel = Product::where('title', $product['attributes']['title'])->first();
                 // если товар в БД есть с названием как в канале - то сразу ставим цену провайдера
 
-                ProviderItem::create([
+                $providerItem = ProviderItem::create([
                     'provider_id' => $provider->id,
                     'title' => $product['attributes']['title'],
                     'price' => $product['attributes']['price'],
@@ -73,19 +85,19 @@ class ParserService
 
                 if ($productModel) {
                     $attrs = [
-                        'provider_id' => $provider->id,
+                        'provider_item_id' => $providerItem->id,
                         'product_id' => $productModel->id,
                     ];
-                    Price::updateOrCreate($attrs, array_merge($attrs, ['price' => $product['attributes']['price']]));
+                    ProductProviderPrice::updateOrCreate($attrs, array_merge($attrs, ['price' => $product['attributes']['price']]));
                 }
 
             } else {
                 if ($providerItem->status == ProviderItem::STATUS_ACCEPT) {
                     $attrs = [
-                        'provider_id' => $provider->id,
+                        'provider_item_id' => $providerItem->id,
                         'product_id' => $providerItem->product_id,
                     ];
-                    Price::updateOrCreate($attrs, array_merge($attrs, ['price' => $product['attributes']['price']]));
+                    ProductProviderPrice::updateOrCreate($attrs, array_merge($attrs, ['price' => $product['attributes']['price']]));
                 }
             }
         }
@@ -129,7 +141,6 @@ class ParserService
                 ];
             }
         }
-
         return $products;
     }
 

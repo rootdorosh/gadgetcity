@@ -50,8 +50,6 @@ class ILovePhoneOpt implements IProcessor
             }
         }
 
-        dump($products);
-
         return $products;
     }
 }

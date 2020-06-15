@@ -6,6 +6,7 @@ Route::name('admin.product.')
     ->middleware('auth')
     ->group(function () {
         Route::get('products/autocomplete', 'ProductController@autocomplete')->name('products.autocomplete');
+        Route::get('products/price-report', 'ProductController@priceReport')->name('products.price-report');
         Route::resource('products', 'ProductController');
 
         Route::resource('providers', 'ProviderController');

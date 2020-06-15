@@ -59,8 +59,6 @@ class ByryndychokApple implements IProcessor
             }
         }
 
-        dump($products);
-
         return $products;
     }
 }

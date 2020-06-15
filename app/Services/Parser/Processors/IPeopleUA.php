@@ -45,8 +45,6 @@ class IPeopleUA implements IProcessor
             }
         }
 
-        dump($products);
-
         return $products;
     }
 }

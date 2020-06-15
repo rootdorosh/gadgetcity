@@ -50,8 +50,6 @@ class RestartTradeIn implements IProcessor
             }
         }
 
-        dump($products);
-
         return $products;
     }
 }

@@ -27,7 +27,6 @@ class WeareFriendly implements IProcessor
             $groupData = [];
             $j = 0;
             foreach ($lines as $k => $val) {
-                dump($val);
                 if (in_array($k, $indexesEmpty)) {
                     $j++;
                 }
@@ -79,7 +78,6 @@ class WeareFriendly implements IProcessor
                 ];
             }
         }
-        dump($products);
 
         //die();
         return $products;
