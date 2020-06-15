@@ -44,7 +44,7 @@ class ParserService
         */
 
         //DB::statement('DELETE FROM product_providers_items');
-        $this->skipLastMessId = true;
+        //$this->skipLastMessId = true;
 
         $providers = [
             'ByryndychokApple',
@@ -94,14 +94,14 @@ class ParserService
                 ->first();
 
 
+            /*
             if (!empty($providerItem)) {
                 $providerItem->price_time = $product['price_time'];
                 $providerItem->save();
                 echo "\t $providerItem->id \n";
             }
-
             continue;
-
+            */
 
             if (!$providerItem) {
                 $productModel = Product::where('title', $product['attributes']['title'])->first();
