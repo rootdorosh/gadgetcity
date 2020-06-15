@@ -32,7 +32,7 @@ class Parser extends Command
      * @param ParserService $parserService
      * @return void
      */
-    public function __construct(parserService $parserService)
+    public function __construct(ParserService $parserService)
     {
         $this->parserService = $parserService;
 

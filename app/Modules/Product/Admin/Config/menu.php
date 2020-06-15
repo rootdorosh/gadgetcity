@@ -28,8 +28,8 @@ return [
                 'permission' => 'product.provideritem.index',
             ],
             [
-                'title' => 'Report',
-                'route' => r('admin.product.price-report'),
+                'title' => __('product::product.price_report'),
+                'route' => r('admin.product.products.price-report'),
                 'icon' => 'fa-folder',
                 'permission' => 'product.product.index',
             ],

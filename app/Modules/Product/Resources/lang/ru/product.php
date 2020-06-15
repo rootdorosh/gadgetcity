@@ -16,4 +16,5 @@ return [
         'is_active' => 'Active',
         'price' => 'Price',
     ],
+    'price_report' => 'Report',
 ];

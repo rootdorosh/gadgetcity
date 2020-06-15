@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use App\Services\Curl;
 use App\Modules\Product\Models\{
     Product,
+    Price,
     Provider,
     ProviderItem,
     ProductProviderPrice
@@ -20,12 +21,31 @@ use DB;
  */
 class ParserService
 {
+    private $skipLastMessId = false;
+
     /**
      * @return void
      */
     public function run() : void
     {
-        DB::statement('DELETE FROM product_providers_items');
+        foreach (Price::get() as $price) {
+            $providerItem = ProviderItem::where('product_id', $price->product_id)
+                ->where('provider_id', $price->provider_id)
+                ->first();
+
+            $pp = ProductProviderPrice::create([
+                'product_id' => $providerItem->product_id,
+                'provider_item_id' => $providerItem->id,
+                'price' => $providerItem->price,
+            ]);
+            echo $pp->id . "\n";
+        }
+        die();
+
+
+
+        //DB::statement('DELETE FROM product_providers_items');
+        //$this->skipLastMessId = true;
 
         $providers = [
             'ByryndychokApple',
@@ -60,6 +80,7 @@ class ParserService
     public function parseProvider(Provider $provider)
     {
         $posts = $this->getChannelPosts($provider);
+
         $products = $this->getProducts($provider, $posts);
 
         foreach ($products as $product) {
@@ -70,6 +91,7 @@ class ParserService
 
             $providerItem = ProviderItem::where('provider_id', $provider->id)
                 ->where('title', $product['attributes']['title'])
+                ->where('price', $product['attributes']['price'])
                 ->first();
 
             if (!$providerItem) {
@@ -80,7 +102,9 @@ class ParserService
                     'provider_id' => $provider->id,
                     'title' => $product['attributes']['title'],
                     'price' => $product['attributes']['price'],
+                    'price_time' => $product['price_time'],
                     'status' => $productModel === null ? ProviderItem::STATUS_AWAIT : ProviderItem::STATUS_AUTO,
+                    'product_id' => $productModel ? $productModel->id : null,
                 ]);
 
                 if ($productModel) {
@@ -138,6 +162,7 @@ class ParserService
                 $products[] = [
                     'attributes' => $item,
                     'provider_id' => $provider->id,
+                    'price_time' => $post['price_time'],
                 ];
             }
         }
@@ -163,12 +188,22 @@ class ParserService
     {
         $data = [];
         $url = "http://88.198.157.69:9000/index.php?channel=$provider->pid";
+        if (!empty($provider->last_guid) && !$this->skipLastMessId) {
+            $url.= '&min_id=' . $provider->last_guid;
+        }
+
         $xml = simplexml_load_string(Curl::getPage($url));
         foreach ($xml->messages->message as $item) {
             $data[] = [
                 'content' => (string) $item->content,
                 'guid' => (int) $item->id,
+                'price_time' => (int) $item->time,
             ];
+        }
+
+        if (count($data)) {
+            $provider->last_guid = end($data)['guid'];
+            $provider->save();
         }
 
         return $data;

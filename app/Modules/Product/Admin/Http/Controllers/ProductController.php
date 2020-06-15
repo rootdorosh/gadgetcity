@@ -7,6 +7,7 @@ use App\Modules\Product\Services\Crud\ProductCrudService;
 use App\Modules\Product\Models\Product;
 use App\Modules\Product\Admin\Http\Requests\Product\{
     IndexFilter,
+    PriceReportFilter,
     FormRequest,
     CreateRequest,
     EditRequest,
@@ -45,6 +46,20 @@ class ProductController extends AdminController
         }
 
         return $this->view('product.index', compact('modelFilter'));
+    }
+
+    /**
+     * Price report
+     *
+     * @param PriceReportFilter $request
+     */
+    public function priceReport(PriceReportFilter $modelFilter)
+    {
+        if ($modelFilter->ajax()) {
+            return $modelFilter->getData();
+        }
+
+        return $this->view('product.price_report', compact('modelFilter'));
     }
 
     /**

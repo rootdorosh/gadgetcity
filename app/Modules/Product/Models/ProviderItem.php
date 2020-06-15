@@ -48,6 +48,7 @@ class ProviderItem extends Model
         'product_id',
         'status',
         'price',
+        'price_time',
     ];
 
     /**

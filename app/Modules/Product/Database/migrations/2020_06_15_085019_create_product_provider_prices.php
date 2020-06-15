@@ -22,9 +22,6 @@ class CreateProductProviderPrices extends Migration
             $table->foreign('product_id')->references('id')->on('product')->onDelete('CASCADE');
             $table->foreign('provider_item_id')->references('id')->on('product_providers_items')->onDelete('CASCADE');
         });
-
-        $table->date('date', 10, 2);
-
     }
 
     /**
