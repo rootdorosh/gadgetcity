@@ -28,6 +28,7 @@ class ParserService
      */
     public function run() : void
     {
+        /*
         foreach (Price::get() as $price) {
             $providerItem = ProviderItem::where('product_id', $price->product_id)
                 ->where('provider_id', $price->provider_id)
@@ -40,9 +41,7 @@ class ParserService
             ]);
             echo $pp->id . "\n";
         }
-        die();
-
-
+        */
 
         //DB::statement('DELETE FROM product_providers_items');
         //$this->skipLastMessId = true;
