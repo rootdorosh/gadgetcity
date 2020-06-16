@@ -144,20 +144,42 @@ class ProviderItemController extends AdminController
     public function setProduct(Request $request)
     {
         $providerItem = ProviderItem::where('id', $request->id)->first();
-        $providerItem->product_id = $request->product_id;
         $providerItem->status = ProviderItem::STATUS_ACCEPT;
         $providerItem->save();
 
         $attrs = [
-            'product_id' => $providerItem->product_id,
+            'product_id' => $request->product_id,
             'provider_item_id' => $providerItem->id,
         ];
 
-        ProductProviderPrice::updateOrCreate($attrs, array_merge($attrs, ['price' => $providerItem->price]));
+        $productProviderPrice = ProductProviderPrice::updateOrCreate($attrs, array_merge($attrs, ['price' => $providerItem->price]));
+        $productProviderPrice->refresh();
 
         return response()->json([
-            'product_title' => $providerItem->product->title,
+            'price_id' => $productProviderPrice->id,
+            'product_title' => $productProviderPrice->product->title,
             'status_title' => $providerItem->getStatusTitle(),
+        ]);
+    }
+
+    /**
+     * @param int $priceId
+     */
+    public function removePrice(int $priceId)
+    {
+        $price = ProductProviderPrice::find($priceId);
+        $providerItemId = $price->provider_item_id;
+        $price->delete();
+
+        $providerItem = ProviderItem::find($providerItemId);
+        if (!ProductProviderPrice::where('provider_item_id', $providerItemId)->count()) {
+            $providerItem->status = ProviderItem::STATUS_AWAIT;
+            $providerItem->save();
+        }
+
+        return response()->json([
+            'status_title' => $providerItem->getStatusTitle(),
+            'status_style' => $providerItem->getStatusStyle(),
         ]);
     }
 

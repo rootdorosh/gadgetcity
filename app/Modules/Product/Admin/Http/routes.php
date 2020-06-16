@@ -13,6 +13,7 @@ Route::name('admin.product.')
 
         Route::put('provider-items/bulk-toggle', 'ProviderItemController@bulkToggle')->name('provider-items.bulk-toggle');
         Route::put('provider-items/set-product', 'ProviderItemController@setProduct')->name('provider-items.set-product');
+        Route::delete('provider-items/remove-price/{priceId}', 'ProviderItemController@removePrice');
         Route::resource('provider-items', 'ProviderItemController');
 
     });

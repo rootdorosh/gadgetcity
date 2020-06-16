@@ -50,7 +50,9 @@ $(function () {
 			},
 			{
 				name: 'product_title',
-				label: "{{ __('product::provider_item.fields.product_id') }}"
+				label: "{{ __('product::provider_item.fields.product_id') }}",
+                filter: false,
+                sortable: false,
 			},
 			{
 				name: 'status',
@@ -163,8 +165,33 @@ $(function () {
             },
             success: function (data) {
                 var tr = activeSelectionSetProduct.closest('tr');
-                $('.js-product_title', tr).html(data.product_title);
+                var tpl = `<p>${data.product_title} <a href="#" data-id="${data.price_id}" class="badge badge-danger js-remove-price">x</a></p>`;
+
+                $('.js-product_title', tr).prepend(tpl);
                 $('.js-status span', tr).html(data.status_title).attr('class', 'badge badge-success');
+            }
+        });
+    })
+
+    $('body').on('click', '.js-remove-price', function (e) {
+        e.preventDefault();
+        if (!confirm('Удалить')) {
+            return;
+        }
+
+        var self = $(this);
+
+        $.ajax({
+            dataType: "json",
+            type: 'DELETE',
+            url: "/admin/product/provider-items/remove-price/" + self.data('id'),
+            headers: {
+                'X-CSRF-TOKEN': window._token
+            },
+            success: function (data) {
+                var tr = self.closest('tr');
+                self.closest('p').remove();
+                $('.js-status span', tr).html(data.status_title).attr('class', 'badge badge-' + data.status_style);
             }
         });
     })

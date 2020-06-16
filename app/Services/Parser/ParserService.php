@@ -113,7 +113,6 @@ class ParserService
                     'price' => $product['attributes']['price'],
                     'price_time' => $product['price_time'],
                     'status' => $productModel === null ? ProviderItem::STATUS_AWAIT : ProviderItem::STATUS_AUTO,
-                    'product_id' => $productModel ? $productModel->id : null,
                 ]);
 
                 if ($productModel) {
@@ -126,11 +125,15 @@ class ParserService
 
             } else {
                 if ($providerItem->status == ProviderItem::STATUS_ACCEPT) {
-                    $attrs = [
-                        'provider_item_id' => $providerItem->id,
-                        'product_id' => $providerItem->product_id,
-                    ];
-                    ProductProviderPrice::updateOrCreate($attrs, array_merge($attrs, ['price' => $product['attributes']['price']]));
+
+                    $prices = ProductProviderPrice::where('provider_item_id', $providerItem->id)
+                        ->where('product_id', $providerItem->product_id)
+                        ->get();
+
+                    foreach ($prices as $item) {
+                        $item->price = $product['attributes']['price'];
+                        $item->save();
+                    }
                 }
             }
         }

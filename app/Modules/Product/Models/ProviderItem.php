@@ -45,7 +45,6 @@ class ProviderItem extends Model
         'id',
         'provider_id',
         'title',
-        'product_id',
         'status',
         'price',
         'price_time',
@@ -61,23 +60,20 @@ class ProviderItem extends Model
         return $this->belongsTo('App\Modules\Product\Models\Provider');
     }
 
-
-    /**
-     * Get the product.
-     *
-     * @return  BelongsTo
-     */
-    public function product() : BelongsTo
-    {
-        return $this->belongsTo('App\Modules\Product\Models\Product');
-    }
-
     /*
      *
      */
     public function getStatusTitle()
     {
         return !empty(self::STATUSES[$this->status]) ? self::STATUSES[$this->status] : null;
+    }
+
+    /*
+     *
+     */
+    public function getStatusStyle()
+    {
+        return !empty(self::STATUSES_STYLE[$this->status]) ? self::STATUSES_STYLE[$this->status] : null;
     }
 
 }
