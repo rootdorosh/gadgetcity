@@ -37,15 +37,14 @@ $(function () {
                 sortable: false,
                 render: function(row) {
                     let items = row['provider_{{ $provider->id }}'];
-                    let html = '<table>';
+                    let html = '';
                     $.each(items, function(k, row) {
-                        html+= '<tr>';
-                        html+= `<td>${row.title}</td>`;
-                        html+= `<td>${row.date}</td>`;
-                        html+= `<td>${row.price}</td>`;
-                        html+= '</tr>';
+                        html+= `<span><b>\$${row.price}</b></span><br/>`;
+                        html+= `<span>${row.title}</span><br/>`;
+                        html+= `<span>${row.date}</span><br/>`;
+                        html+= '<br/>';
                     })
-                    html += '</table>';
+                    html += '';
                     return html;
                 }
             },
