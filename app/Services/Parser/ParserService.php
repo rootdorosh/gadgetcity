@@ -46,6 +46,8 @@ class ParserService
         //DB::statement('DELETE FROM product_providers_items');
         //$this->skipLastMessId = true;
 
+        $this->splitProviderItems();
+
         $providers = [
             'ByryndychokApple',
             'MrFixUa',
@@ -72,6 +74,54 @@ class ParserService
         }
     }
 
+    public function splitProviderItems()
+    {
+        ProviderItem::chunk(100, function($providerItems) {
+            foreach ($providerItems as $providerItem) {
+                $productTitles = $this->getSplitProductsByColor($providerItem->title);
+                if (count($productTitles) > 1) {
+                    foreach ($productTitles as $productTitle) {
+                        $product = [
+                            'price_time' => $providerItem->price_time,
+                            'attributes' => [
+                                'price' => $providerItem->price,
+                                'title' => $productTitle,
+                            ],
+                        ];
+                        $provider = Provider::find($providerItem->provider_id);
+                        $providerItem->delete();
+                        $this->parseProviderItem($provider, $product);
+
+                        echo "$providerItem->title \n";
+                        dump($productTitles);
+                    }
+                }
+            }
+         });
+    }
+
+    public function getSplitProductsByColor(string $title): array
+    {
+        $colors = $this->getColors();
+        preg_match_all('/('.implode('|', $colors).')/', $title, $match);
+        if (!empty($match[1])) {
+            $productColors = array_filter($match[1], function ($value) use ($colors) {
+                return !empty($value) && in_array($value, $colors);
+            });
+            $colorsTitle = implode('/', $productColors);
+            if (count($productColors) > 1 && substr_count($title, $colorsTitle)) {
+                $products = [];
+                foreach ($productColors as $productColor) {
+                    $products[] = str_replace($colorsTitle, $productColor, $title);
+                }
+
+                return $products;
+            }
+        }
+
+        return [$title];
+    }
+
     /**
      * @param Provider $provider
      * @return void
@@ -88,52 +138,61 @@ class ParserService
                 continue;
             }
 
-            $providerItem = ProviderItem::where('provider_id', $provider->id)
-                ->where('title', $product['attributes']['title'])
-                ->where('price', $product['attributes']['price'])
-                ->first();
-
-
-            /*
-            if (!empty($providerItem)) {
-                $providerItem->price_time = $product['price_time'];
-                $providerItem->save();
-                echo "\t $providerItem->id \n";
-            }
-            continue;
-            */
-
-            if (!$providerItem) {
-                $productModel = Product::where('title', $product['attributes']['title'])->first();
-                // если товар в БД есть с названием как в канале - то сразу ставим цену провайдера
-
-                $providerItem = ProviderItem::create([
-                    'provider_id' => $provider->id,
-                    'title' => $product['attributes']['title'],
-                    'price' => $product['attributes']['price'],
-                    'price_time' => $product['price_time'],
-                    'status' => $productModel === null ? ProviderItem::STATUS_AWAIT : ProviderItem::STATUS_AUTO,
-                ]);
-
-                if ($productModel) {
-                    $attrs = [
-                        'provider_item_id' => $providerItem->id,
-                        'product_id' => $productModel->id,
-                    ];
-                    ProductProviderPrice::updateOrCreate($attrs, array_merge($attrs, ['price' => $product['attributes']['price']]));
-                }
-
+            // split product title by colors: iPhone XS Max 64GB Space/Gold/Red
+            $productsByColor = $this->getSplitProductsByColor($product['attributes']['title']);
+            if (count($productsByColor) > 1) {
+                $this->parseProviderItem($provider, $product);
             } else {
-                if ($providerItem->status == ProviderItem::STATUS_ACCEPT) {
+                foreach ($productsByColor as $productColorTitle) {
+                    $product['attributes']['title'] = $productColorTitle;
+                    $this->parseProviderItem($provider, $product);
+                }
+            }
 
-                    $prices = ProductProviderPrice::where('provider_item_id', $providerItem->id)
-                        ->where('product_id', $providerItem->product_id)
-                        ->get();
+       }
+    }
 
-                    foreach ($prices as $item) {
-                        $item->price = $product['attributes']['price'];
-                        $item->save();
-                    }
+    /**
+     * @param Provider $provider
+     * @param array $product
+     */
+    public function parseProviderItem(Provider $provider, array $product)
+    {
+        $providerItem = ProviderItem::where('provider_id', $provider->id)
+            ->where('title', $product['attributes']['title'])
+            ->where('price', $product['attributes']['price'])
+            ->first();
+
+        if (!$providerItem) {
+            $productModel = Product::where('title', $product['attributes']['title'])->first();
+            // если товар в БД есть с названием как в канале - то сразу ставим цену провайдера
+
+            $providerItem = ProviderItem::create([
+                'provider_id' => $provider->id,
+                'title' => $product['attributes']['title'],
+                'price' => $product['attributes']['price'],
+                'price_time' => $product['price_time'],
+                'status' => $productModel === null ? ProviderItem::STATUS_AWAIT : ProviderItem::STATUS_AUTO,
+            ]);
+
+            if ($productModel) {
+                $attrs = [
+                    'provider_item_id' => $providerItem->id,
+                    'product_id' => $productModel->id,
+                ];
+                ProductProviderPrice::updateOrCreate($attrs, array_merge($attrs, ['price' => $product['attributes']['price']]));
+            }
+
+        } else {
+            if ($providerItem->status == ProviderItem::STATUS_ACCEPT) {
+
+                $prices = ProductProviderPrice::where('provider_item_id', $providerItem->id)
+                    ->where('product_id', $providerItem->product_id)
+                    ->get();
+
+                foreach ($prices as $item) {
+                    $item->price = $product['attributes']['price'];
+                    $item->save();
                 }
             }
         }
@@ -219,5 +278,27 @@ class ParserService
         }
 
         return $data;
+    }
+
+    public function getColors(): array
+    {
+        return [
+            'blue',
+            'black',
+            'coral',
+            'gold',
+            'green',
+            'gray',
+            'matt',
+            'purpur',
+            'purple',
+            'red',
+            'rose',
+            'silver',
+            'space',
+            'white',
+            'yellow',
+            '',
+        ];
     }
 }
