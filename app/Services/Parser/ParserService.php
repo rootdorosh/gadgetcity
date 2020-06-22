@@ -47,7 +47,7 @@ class ParserService
         //$this->skipLastMessId = true;
 
         $this->splitProviderItems();
-
+   
         $providers = [
             'ByryndychokApple',
             'MrFixUa',
@@ -102,11 +102,16 @@ class ParserService
 
     public function getSplitProductsByColor(string $title): array
     {
+        $colorsTitleVariants = $this->getColorsVariants();
+        $title = str_ireplace(array_keys($colorsTitleVariants), $colorsTitleVariants, $title);
+
         $colors = $this->getColors();
-        preg_match_all('/('.implode('|', $colors).')/', $title, $match);
+
+        $pattern = '/('.implode('|', $colors).')/i';
+        preg_match_all($pattern, $title, $match);
         if (!empty($match[1])) {
-            $productColors = array_filter($match[1], function ($value) use ($colors) {
-                return !empty($value) && in_array($value, $colors);
+            $productColors = array_filter($match[1], function ($value) use ($colors, $title) {
+                return !empty($value) && in_array(strtolower($value), $colors);
             });
             $colorsTitle = implode('/', $productColors);
             if (count($productColors) > 1 && substr_count($title, $colorsTitle)) {
@@ -114,11 +119,9 @@ class ParserService
                 foreach ($productColors as $productColor) {
                     $products[] = str_replace($colorsTitle, $productColor, $title);
                 }
-
                 return $products;
             }
         }
-
         return [$title];
     }
 
@@ -290,6 +293,7 @@ class ParserService
             'green',
             'gray',
             'matt',
+            'platinum',
             'purpur',
             'purple',
             'red',
@@ -298,7 +302,20 @@ class ParserService
             'space',
             'white',
             'yellow',
-            '',
         ];
+    }
+
+    public function getColorsVariants(): array
+    {
+        $colors = $this->getColors();
+
+        $data = [];
+        foreach ($colors as $colorFirst) {
+            foreach ($colors as $colorTwo) {
+                $data[",{$colorFirst} /{$colorTwo}"] = ", {$colorFirst}/{$colorTwo}";
+                $data["{$colorFirst} /{$colorTwo}"] = "{$colorFirst}/{$colorTwo}";
+            }
+        }
+        return $data;
     }
 }
