@@ -47,6 +47,7 @@ class ParserService
         //$this->skipLastMessId = true;
 
         $this->splitProviderItems();
+        //die();
 
         $providers = [
             'ByryndychokApple',
@@ -102,6 +103,8 @@ class ParserService
 
     public function getSplitProductsByColor(string $title): array
     {
+        $title = str_replace(["\t", "\n", "\r"], "", $title);
+
         $colorsTitleVariants = $this->getColorsVariants();
         $title = str_ireplace(array_keys($colorsTitleVariants), $colorsTitleVariants, $title);
 
@@ -109,6 +112,7 @@ class ParserService
 
         $pattern = '/('.implode('|', $colors).')/i';
         preg_match_all($pattern, $title, $match);
+
         if (!empty($match[1])) {
             $productColors = array_filter($match[1], function ($value) use ($colors, $title) {
                 return !empty($value) && in_array(strtolower($value), $colors);
@@ -117,11 +121,12 @@ class ParserService
             if (count($productColors) > 1 && substr_count($title, $colorsTitle)) {
                 $products = [];
                 foreach ($productColors as $productColor) {
-                    $products[] = str_replace($colorsTitle, $productColor, $title);
+                    $products[] = str_ireplace($colorsTitle, $productColor, $title);
                 }
                 return $products;
             }
         }
+
         return [$title];
     }
 
