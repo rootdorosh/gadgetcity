@@ -47,7 +47,7 @@ class ParserService
         //$this->skipLastMessId = true;
 
         $this->splitProviderItems();
-        //die();
+        die();
 
         $providers = [
             'ByryndychokApple',
@@ -94,7 +94,6 @@ class ParserService
                         $this->parseProviderItem($provider, $product);
 
                         echo "$providerItem->title \n";
-                        dump($productTitles);
                     }
                 }
             }
