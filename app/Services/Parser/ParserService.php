@@ -47,7 +47,7 @@ class ParserService
         //$this->skipLastMessId = true;
 
         $this->splitProviderItems();
-
+        die();
         $providers = [
             'ByryndychokApple',
             'MrFixUa',
