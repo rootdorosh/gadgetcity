@@ -289,6 +289,7 @@ class ParserService
     public function getColors(): array
     {
         return [
+            'anthracite',
             'blue',
             'black',
             'coral',
