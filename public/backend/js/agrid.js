@@ -3,7 +3,7 @@ var aGridExt = {
         return `<span class="badge badge-${type}">${value}</span>`;
     },
     renderYesNo: function(row, attribute = 'is_active') {
-        return row[attribute] ? this.renderBadge('Yes', 'success') : this.renderBadge('Yes', 'secondary');
+        return row[attribute] ? this.renderBadge('да', 'success') : this.renderBadge('нет', 'secondary');
     },
     defaultRowActions: function(params) {
         var idKey = (typeof params.idKey !== 'undefined') ? params.idKey : 'id';
@@ -398,6 +398,7 @@ function bulkToggle(params) {
         function getColumnFilter(column) {
             var html = '';
             var formControlClass = 'form-control form-control-sm';
+
             if (column.filter !== false) {
                 var type = (typeof column.filter !== 'undefined' && typeof column.filter.type !== 'undefined') ?
                     column.filter.type : 'text';
