@@ -169,7 +169,7 @@
             window._token = '{{ csrf_token()  }}';
         </script>
         <script src="/backend/js/app.js"></script>
-        <script src="/backend/js/agrid.js"></script>
+        <script src="/backend/js/agrid.js?{{ time() }}"></script>
 
         @stack('scripts')
 
