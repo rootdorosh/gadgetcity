@@ -30,7 +30,7 @@ class ImportAvailabilityRequest extends BaseFormRequest
         $rules = [
             'file_import' => [
                 'required',
-                'mimes:xlsx,xls',
+                //'mimes:xlsx,xls',
             ],
         ];
 
