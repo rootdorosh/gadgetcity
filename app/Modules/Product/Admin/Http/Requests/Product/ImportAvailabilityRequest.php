@@ -12,16 +12,14 @@ use App\Base\Requests\BaseFormRequest;
  * @package  App\Modules\Product
  *
  */
-class FormRequest extends BaseFormRequest
+class ImportAvailabilityRequest extends BaseFormRequest
 {
     /*
      * @return  bool
      */
     public function authorize(): bool
     {
-        $action = empty($this->product) ? 'store' : 'update';
-
-        return $this->user()->hasPermission('product.product.' . $action);
+        return $this->user()->hasPermission('product.product.index');
     }
 
     /**
@@ -30,19 +28,9 @@ class FormRequest extends BaseFormRequest
     public function rules(): array
     {
         $rules = [
-            'title' => [
+            'file_import' => [
                 'required',
-                'string',
-            ],
-            'is_active' => [
-                'required',
-                'integer',
-                'in:0,1',
-            ],
-            'availability' => [
-                'required',
-                'integer',
-                'min:0',
+                'mimes:xlsx,xls',
             ],
         ];
 

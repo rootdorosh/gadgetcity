@@ -2,19 +2,26 @@
 
 return [
     'title' => [
-        'singular' => 'Product',
-        'index' => 'Products',
-        'create' => 'Create product',
-        'update' => 'Update product',
+        'singular' => 'Товар',
+        'index' => 'Товары',
+        'create' => 'Создание товара',
+        'update' => 'Редактирование товара',
     ],
     'success' => [
-        'created' => 'Product sucess created',
-        'updated' => 'Product sucess updated',
+        'created' => 'Товар успешно создан',
+        'updated' => 'Товар успешно отредактирован',
+        'imported' => 'Успешно проимпортировано',
     ],
     'fields' => [
-        'title' => 'Title',
-        'is_active' => 'Active',
-        'price' => 'Price',
+        'title' => 'Название',
+        'is_active' => 'Активность',
+        'price' => 'Цена',
+        'availability' => 'К-во',
+        'file_import' => 'Файл импорта',
+        'is_availability' => 'В наличии'
     ],
-    'price_report' => 'Report',
+    'price_report' => 'Отчет',
+    'import_availability' => [
+        'title' => 'Импорт к-ва',
+    ],
 ];

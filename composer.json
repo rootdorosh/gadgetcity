@@ -12,15 +12,15 @@
         "arrilot/laravel-widgets": "^3.13",
         "barryvdh/laravel-cors": "^0.11.4",
         "chrome-php/chrome": "^0.7.0",
+        "danog/madelineproto": "*",
         "fideloper/proxy": "^4.0",
         "intervention/image": "^2.5",
         "jeremykenedy/laravel-roles": "^2.3",
         "laravel/framework": "^6.0",
         "laravel/tinker": "^1.0",
         "league/fractal": "^0.17.0",
-        "spatie/laravel-fractal": "^5.5",
-        "danog/madelineproto":"*"
-
+        "phpoffice/phpspreadsheet": "^1.14",
+        "spatie/laravel-fractal": "^5.5"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",

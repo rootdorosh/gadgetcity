@@ -39,6 +39,7 @@ class IndexFilter extends BaseFilter
                     'id',
                     'title',
                     'is_active',
+                    'availability',
                 ]),
             ],
             'title' => [
@@ -53,6 +54,11 @@ class IndexFilter extends BaseFilter
                 'nullable',
                 'integer',
                 'min:1',
+            ],
+            'availability' => [
+                'nullable',
+                'integer',
+                'min:0',
             ],
         ];
 
@@ -74,7 +80,10 @@ class IndexFilter extends BaseFilter
         }
 
         if ($this->is_active !== null) {
-            $query->where("is_active", "like", "%{$this->is_active}%");
+            $query->where("is_active", $this->is_active);
+        }
+        if ($this->availability !== null) {
+            $query->where("availability", $this->availability);
         }
 
         return $query;
@@ -124,6 +133,7 @@ class IndexFilter extends BaseFilter
                 'id' => $row->id,
                 'title' => $row->title,
                 'is_active' => $row->is_active,
+                'availability' => $row->availability,
                 'price' => !empty($dataPrice[$row->id])
                     ? $this->formatPrice($dataPrice[$row->id])
                     : null,

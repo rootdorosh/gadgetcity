@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 declare( strict_types = 1 );
 
@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    
+
     /**
      * @var  bool
      */
@@ -18,18 +18,19 @@ class Product extends Model
      * @var  string
      */
     public $table = 'product';
-    
+
     /**
      * The attributes that are mass assignable.
-     
+
      * @var  array
      */
     public $fillable = [
         'id',
         'title',
-        'is_active', 
-    ];  
-  
-   
-     
+        'is_active',
+        'availability',
+    ];
+
+
+
 }

@@ -7,17 +7,6 @@
        'tab' => 'main',
     ], function (App\Services\Form\Form $form) use ($product) {
 
-		$form->addTab('main', [
-			'title' => __('product::product.title.singular'),
-		]);
-
-
-		$form->text('title');
-
-		$form->toggle('is_active');
-
-		$form->text('availability');
-
-
-        $form->button('submit', 'btn-success btn-sm', __('app.submit'));
+    $form->input('file', 'file_import');
+    $form->button('submit', 'btn-success btn-sm', __('app.submit'));
 });?>

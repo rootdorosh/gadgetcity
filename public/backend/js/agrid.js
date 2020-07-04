@@ -2,8 +2,8 @@ var aGridExt = {
     renderBadge: function(value, type) {
         return `<span class="badge badge-${type}">${value}</span>`;
     },
-    renderYesNo: function(value) {
-        return value ? this.renderBadge('Yes', 'success') : this.renderBadge('Yes', 'secondary');
+    renderYesNo: function(row, attribute = 'is_active') {
+        return row[attribute] ? this.renderBadge('Yes', 'success') : this.renderBadge('Yes', 'secondary');
     },
     defaultRowActions: function(params) {
         var idKey = (typeof params.idKey !== 'undefined') ? params.idKey : 'id';
@@ -406,7 +406,7 @@ function bulkToggle(params) {
                     html = '<input class="ag-filter-input ' + formControlClass + '" name="' + column.name + '" type="text">';
                 } else if (type === 'select') {
                     var options = (typeof column.filter.options !== 'undefined') ?
-                        column.filter.options : {1:'Yes', 0:'No'};
+                        column.filter.options : {1:'да', 0:'нет'};
 
                     html = '<select class="ag-filter-input ' + formControlClass + '" name="' + column.name + '">';
                     html+= '<option value="">-</option>';
@@ -426,7 +426,7 @@ function bulkToggle(params) {
             }
 
             return data.count ?
-                `<label class="ml-5">Showing&nbsp;${data.from}-${data.to} of ${data.count}` :
+                `<label class="ml-5">Показано&nbsp;${data.from}-${data.to} з ${data.count}` :
                 `No data ...`;
         }
 
@@ -450,7 +450,7 @@ function bulkToggle(params) {
 
             if (opts.perPageSelector) {
                 theadPanel += '<label class="ml-2 js-pager-select">';
-                theadPanel += 'Per page: <select name="per_page" class="form-control-sm">';
+                theadPanel += 'Показать: <select name="per_page" class="form-control-sm">';
                 $.each(opts.perPageData, function(i, val){
                     var selected = val == opts.perPage ? 'selected="selected"' : '';
                     theadPanel += '<option value="' + val + '" ' + selected + '>' + val + '</option>';

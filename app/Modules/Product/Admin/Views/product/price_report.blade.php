@@ -28,7 +28,17 @@ $(function () {
 			{
 				name: 'title',
 				label: "{{ __('product::product.fields.title') }}"
-			},
+        	},
+
+            {
+                name: 'is_availability',
+                label: "{{ __('product::product.fields.is_availability') }}",
+                render: function(row) {
+                    return aGridExt.renderYesNo(row, 'is_availability');
+                },
+                filter: {type: 'select'},
+                sortable: false,
+            },
             @foreach(\App\Modules\Product\Models\Provider::where('is_active', 1)->get() as $provider)
             {
                 name: 'provider_{{ $provider->id }}',

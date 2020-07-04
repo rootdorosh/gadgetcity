@@ -5,9 +5,11 @@ Route::name('admin.product.')
     ->prefix('admin/product')
     ->middleware('auth')
     ->group(function () {
+        Route::get('products/import-availability', 'ProductController@importAvailability')->name('products.import-availability');
+        Route::post('products/import-availability', 'ProductController@importAvailabilityPost')->name('products.import-availability.post');
         Route::get('products/autocomplete', 'ProductController@autocomplete')->name('products.autocomplete');
         Route::get('products/price-report', 'ProductController@priceReport')->name('products.price-report');
-        Route::resource('products', 'ProductController');
+        Route::resource('products', 'ProductController')->except(['show']);
 
         Route::resource('providers', 'ProviderController');
 

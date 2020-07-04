@@ -9,12 +9,14 @@ use App\Modules\Product\Admin\Http\Requests\Product\{
     IndexFilter,
     PriceReportFilter,
     FormRequest,
+    ImportAvailabilityRequest,
     CreateRequest,
     EditRequest,
     DestroyRequest,
     BulkDestroyRequest,
     BulkToggleRequest
 };
+use Illuminate\Support\Str;
 
 /**
  */
@@ -85,6 +87,33 @@ class ProductController extends AdminController
 
         return redirect(r('admin.product.products.index'))
             ->with('success', __('product::product.success.created'));
+    }
+
+    /**
+     * @return \Illuminate\View\View
+     */
+    public function importAvailability()
+    {
+        return $this->view('product.import_availability');
+    }
+
+    public function importAvailabilityPost(ImportAvailabilityRequest $request)
+    {
+        $file = $request->file_import;
+        $inputFileType = ucfirst(Str::afterLast($file->getClientOriginalName(), '.'));
+        $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+        $spreadsheet = $reader->load($file->getPathname());
+        $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+        foreach ($sheetData as $item) {
+            $product = Product::where('title', trim($item['A']))->first();
+            if (!empty($product)) {
+                $product->availability = $item['B'];
+                $product->save();
+            }
+        }
+
+        return redirect(r('admin.product.products.index'))
+            ->with('success', __('product::product.success.imported'));
     }
 
     /**

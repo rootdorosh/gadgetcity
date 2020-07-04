@@ -8,13 +8,15 @@
     <div class="card-header">
         <h3 class="card-title float-sm-left">{{ __('product::product.title.index') }}</h3>
         @if (allow('product.product.store'))
-        <a class="btn btn-success btn-xs card-title float-sm-right" href="{{ r('admin.product.products.create') }}">{{ __('app.add') }}</a>
+            <a class="btn btn-success btn-xs card-title float-sm-left ml-3" href="{{ r('admin.product.products.create') }}">{{ __('app.add') }}</a>
         @endif
+        <a class="btn btn-primary btn-xs card-title float-sm-right js-btn-show-import-availability" href="{{ route('admin.product.products.import-availability') }}">{{ __('product::product.import_availability.title') }}</a>
     </div>
     <div class="card-body">
         <table class=" table table-bordered table-striped table-hover agrid" id="products-grid"></table>
     </div>
 </div>
+
 @endsection
 
 @push('scripts')
@@ -41,6 +43,10 @@ $(function () {
                 label: "{{ __('product::product.fields.price') }}",
                 filter: false,
                 sortable: false,
+            },
+            {
+                name: 'availability',
+                label: "{{ __('product::product.fields.availability') }}",
             },
 			{
 				name: 'is_active',

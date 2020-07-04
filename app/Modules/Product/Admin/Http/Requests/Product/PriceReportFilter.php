@@ -43,7 +43,9 @@ class PriceReportFilter extends BaseFilter
             ],
             'title' => [
                 'nullable',
-                'string',
+            ],
+            'is_availability' => [
+                'nullable',
             ],
         ];
 
@@ -59,6 +61,14 @@ class PriceReportFilter extends BaseFilter
 
         if ($this->title !== null) {
             $query->where("title", "like", "%{$this->title}%");
+        }
+
+        if ($this->is_availability !== null) {
+            if ($this->is_availability == '0') {
+                $query->where("availability", 0);
+            } else {
+                $query->whereRaw("availability > 0");
+            }
         }
 
         return $query;
@@ -115,7 +125,10 @@ class PriceReportFilter extends BaseFilter
         $providers = Provider::where('is_active', 1)->get();
 
         foreach ($rows as $row) {
-            $item = ['title' => $row->title];
+            $item = [
+                'title' => $row->title,
+                'is_availability' => $row->availability ? 1 : 0,
+            ];
             foreach ($providers as $provider) {
                 $item['provider_' . $provider->id] = !empty($dataPrice[$row->id][$provider->id]) ? $dataPrice[$row->id][$provider->id] : [];
             }
