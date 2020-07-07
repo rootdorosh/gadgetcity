@@ -47,6 +47,15 @@ class PriceReportFilter extends BaseFilter
             'is_availability' => [
                 'nullable',
             ],
+            'is_show_provider_item_title' => [
+                'nullable',
+            ],
+            'date_from' => [
+                'nullable',
+            ],
+            'date_to' => [
+                'nullable',
+            ],
         ];
 
         return $rules;
@@ -100,7 +109,7 @@ class PriceReportFilter extends BaseFilter
         $ids = $rows->pluck('id')->toArray();
         if (count($ids)) {
             $providers = Provider::get()->pluck('pid', 'id')->toArray();
-            $prices = ProductProviderPrice::query()
+            $query = ProductProviderPrice::query()
                 ->select([
                     DB::raw('product_provider_prices.product_id AS product_id'),
                     DB::raw('product_provider_prices.price AS price'),
@@ -109,7 +118,18 @@ class PriceReportFilter extends BaseFilter
                     DB::raw('product_providers_items.provider_id AS provider_id'),
                 ])
                 ->leftJoin('product_providers_items', 'product_providers_items.id', 'product_provider_prices.provider_item_id')
-                ->whereIn('product_provider_prices.product_id', $ids)->orderBy('price')->get();
+                ->whereIn('product_provider_prices.product_id', $ids)->orderBy('price');
+
+            if (!empty($this->date_from)) {
+                $timeFrom = strtotime($this->date_from . ' 00:00:00');
+                $query->whereRaw("product_providers_items.price_time >= $timeFrom");
+            }
+            if (!empty($this->date_to)) {
+                $timeTo = strtotime($this->date_to . ' 23:59:59');
+                $query->whereRaw("product_providers_items.price_time <= $timeTo");
+            }
+
+            $prices = $query->get();
 
             foreach ($prices as $price) {
                 if (!empty($providers[$price->provider_id])) {
@@ -128,6 +148,7 @@ class PriceReportFilter extends BaseFilter
             $item = [
                 'title' => $row->title,
                 'is_availability' => $row->availability ? 1 : 0,
+                'is_show_provider_item_title' => $this->is_show_provider_item_title ? 1 : 0,
             ];
             foreach ($providers as $provider) {
                 $item['provider_' . $provider->id] = !empty($dataPrice[$row->id][$provider->id]) ? $dataPrice[$row->id][$provider->id] : [];
@@ -142,21 +163,5 @@ class PriceReportFilter extends BaseFilter
             'from' => $offset + 1,
             'to' => $offset + min($offset + count($items), $count),
         ];
-    }
-
-    /*
-     *
-     */
-    public function formatPrice($items)
-    {
-        $html = '<table>';
-        foreach ($items as $item) {
-            $html.= '<tr>';
-            $html.= '<td>'.$item['provider'].'</td>';
-            $html.= '<td>'.$item['price'].'</td>';
-            $html.= '</tr>';
-        }
-        $html.= '</table>';
-        return $html;
     }
 }

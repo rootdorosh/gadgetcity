@@ -18,7 +18,9 @@ return [
         'price' => 'Цена',
         'availability' => 'К-во',
         'file_import' => 'Файл импорта',
-        'is_availability' => 'В наличии'
+        'is_availability' => 'В наличии',
+        'is_show_provider_item_title' => 'Показывать названия ProviderItem',
+        'date_range' => 'Диапазон времени',
     ],
     'price_report' => 'Отчет',
     'import_availability' => [
