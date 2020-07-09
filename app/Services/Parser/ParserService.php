@@ -45,8 +45,8 @@ class ParserService
         */
 
         //DB::statement('DELETE FROM product_providers_items');
-        $this->skipLastMessId = true;
-        $this->splitProviderItems();
+        //$this->skipLastMessId = true;
+        //$this->splitProviderItems();
 
         $providers = [
             'ByryndychokApple',
