@@ -164,6 +164,10 @@ class ParserService
      */
     public function parseProviderItem(Provider $provider, array $product)
     {
+        if ($product['attributes']['price'] >= 1000000) {
+            return;
+        }
+
         $providerItem = ProviderItem::where('provider_id', $provider->id)
             ->where('title', $product['attributes']['title'])
             ->where('price', $product['attributes']['price'])
