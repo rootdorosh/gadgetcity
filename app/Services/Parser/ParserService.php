@@ -3,6 +3,7 @@ declare( strict_types = 1 );
 
 namespace App\Services\Parser;
 
+use App\Modules\Color\Models\Color;
 use Illuminate\Support\Str;
 use App\Services\Curl;
 use App\Modules\Product\Models\{
@@ -44,9 +45,8 @@ class ParserService
         */
 
         //DB::statement('DELETE FROM product_providers_items');
-        //$this->skipLastMessId = true;
-
-        //$this->splitProviderItems();
+        $this->skipLastMessId = true;
+        $this->splitProviderItems();
 
         $providers = [
             'ByryndychokApple',
@@ -194,6 +194,11 @@ class ParserService
             }
 
         } else {
+            if ($providerItem->price_time < $product['price_time']) {
+                $providerItem->price_time = $product['price_time'];
+                $providerItem->save();
+            }
+
             if ($providerItem->status == ProviderItem::STATUS_ACCEPT) {
 
                 $prices = ProductProviderPrice::where('provider_item_id', $providerItem->id)
@@ -292,25 +297,7 @@ class ParserService
 
     public function getColors(): array
     {
-        return [
-            'anthracite',
-            'blue',
-            'black',
-            'coral',
-            'gold',
-            'green',
-            'gray',
-            'matt',
-            'platinum',
-            'purpur',
-            'purple',
-            'red',
-            'rose',
-            'silver',
-            'space',
-            'white',
-            'yellow',
-        ];
+        return Color::get()->pluck('code')->toArray();
     }
 
     public function getColorsVariants(): array

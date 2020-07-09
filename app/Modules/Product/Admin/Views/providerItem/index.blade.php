@@ -49,6 +49,11 @@ $(function () {
 				label: "{{ __('product::provider_item.fields.price') }}"
 			},
 			{
+				name: 'price_time',
+				label: "{{ __('product::provider_item.fields.date') }}",
+                filter: false,
+			},
+			{
 				name: 'product_title',
 				label: "{{ __('product::provider_item.fields.product_id') }}",
                 filter: false,

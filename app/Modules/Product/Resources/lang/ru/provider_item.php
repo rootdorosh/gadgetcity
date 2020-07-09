@@ -13,10 +13,11 @@ return [
     ],
     'fields' => [
         'provider_id' => 'Provider',
-        'title' => 'Provider product title ',
-        'product_id' => 'Product',
-        'status' => 'Status',
-        'price' => 'Provider price',
+        'title' => 'Название товара в телеграм ',
+        'product_id' => 'Товар',
+        'status' => 'Статус',
+        'price' => 'Цена в канале',
+        'date' => 'Дата',
     ],
     'status' => [
         'cancel' => 'Cancel',

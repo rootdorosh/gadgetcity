@@ -42,6 +42,7 @@ class IndexFilter extends BaseFilter
                     'product_title',
                     'status',
                     'price',
+                    'price_time',
                 ]),
             ],
             'provider_id' => [
@@ -79,6 +80,7 @@ class IndexFilter extends BaseFilter
             DB::raw('product_providers_items.provider_id AS provider_id'),
             DB::raw('product_providers.title AS provider_title'),
             DB::raw('product_providers_items.price AS price'),
+            DB::raw('product_providers_items.price_time AS price_time'),
         ])
             ->leftJoin('product_providers', 'product_providers.id', '=', 'product_providers_items.provider_id');
 
@@ -175,6 +177,7 @@ class IndexFilter extends BaseFilter
                 'provider_title' => $row->provider_title,
                 'price' => $row->price,
                 'product_title' => $productCell,
+                'price_time' => date('d.m.Y', $row->price_time),
                 /*
                 !empty($row->product_title)
                     ? $row->product_title
