@@ -37,7 +37,7 @@ class FormRequest extends BaseFormRequest
             'code' => [
                 'required',
                 'string',
-                'unique:color',
+                !empty($this->color) ? 'unique:color,id,' . $this->color->id : 'unique:color',
             ],
         ];
 
