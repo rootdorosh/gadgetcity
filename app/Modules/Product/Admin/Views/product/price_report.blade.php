@@ -152,7 +152,7 @@ $(function () {
                         $.each(items, function (k, row) {
                             sum += row.price;
                         })
-                        let avg = sum / items.length;
+                        let avg = Math.ceil(sum / items.length);
                         html = `<span><b>\$${avg}</b></span><br/>`;
                     }
 

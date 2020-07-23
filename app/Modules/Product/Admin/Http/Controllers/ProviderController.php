@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Modules\Product\Admin\Http\Controllers;
 
@@ -23,7 +23,7 @@ class ProviderController extends AdminController
      * var ProviderCrudService
      */
     protected $crudService;
-            
+
     /*
      * @param  ProviderCrudService     $crudService
      */
@@ -31,7 +31,7 @@ class ProviderController extends AdminController
     {
         $this->crudService = $crudService;
     }
-    
+
     /**
      * Providers list
      *
@@ -42,7 +42,7 @@ class ProviderController extends AdminController
         if ($modelFilter->ajax()) {
             return $modelFilter->getData();
         }
-        
+
         return $this->view('provider.index', compact('modelFilter'));
     }
 
@@ -54,8 +54,8 @@ class ProviderController extends AdminController
     public function create(CreateRequest $request)
     {
         $provider = new Provider;
-        
-        return $this->view('provider.create', compact('provider'));       
+
+        return $this->view('provider.create', compact('provider'));
     }
 
     /**
@@ -66,9 +66,9 @@ class ProviderController extends AdminController
     public function store(FormRequest $request)
     {
         $provider = $this->crudService->store($request->validated());
-        
+
         return redirect(r('admin.product.providers.index'))
-            ->with('success', __('product::provider.success.created'));       
+            ->with('success', __('product::provider.success.created'));
     }
 
     /**
@@ -79,7 +79,7 @@ class ProviderController extends AdminController
      */
     public function edit(Provider $provider, EditRequest $request)
     {
-        return $this->view('provider.update', compact('provider'));       
+        return $this->view('provider.update', compact('provider'));
     }
 
     /**
@@ -91,9 +91,9 @@ class ProviderController extends AdminController
     public function update(Provider $provider, FormRequest $request)
     {
         $provider = $this->crudService->update($provider, $request->validated());
-        
-        return redirect(r('admin.product.providers.index')) 
-            ->with('success', __('product::provider.success.updated'));       
+
+        return redirect(r('admin.product.providers.index'))
+            ->with('success', __('product::provider.success.updated'));
     }
 
     /**
@@ -105,10 +105,10 @@ class ProviderController extends AdminController
     public function destroy(Provider $provider, DestroyRequest $request)
     {
         $this->crudService->destroy($provider);
-        
+
         return response()->json(null, 204);
     }
-    
+
     /**
      * Providers bulk destroy
      *
@@ -117,10 +117,10 @@ class ProviderController extends AdminController
     public function bulkDestroy(BulkDestroyRequest $request)
     {
         $this->crudService->bulkDestroy($request->ids);
-        
+
         return response()->json(null, 204);
     }
-    
+
     /**
      * Providers bulk toggle attribute
      *
@@ -129,7 +129,34 @@ class ProviderController extends AdminController
     public function bulkToggle(BulkToggleRequest $request)
     {
         $this->crudService->bulkToggle($request->validated());
-        
+
         return response()->json(null, 204);
+    }
+
+    public function exportMembers()
+    {
+        dd(json_decode(file_get_contents('http://88.198.157.69:9000/m.php'), true));
+
+        return response()->streamDownload(function () {
+
+            $fh = \fopen('php://output', 'wb');
+            $head = [
+                'First name',
+                'Last name',
+                'Username',
+                'Phone',
+            ];
+
+            fputcsv($fh, $head);
+
+            $data = json_decode(file_get_contents('http://88.198.157.69:9000/m.php'), true);
+
+            foreach ($data['items'] as $i => $row) {
+                fputcsv($fh, $row);
+            }
+            flush();
+            fclose($fh);
+
+        }, 'members.csv');
     }
 }

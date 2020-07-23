@@ -11,6 +11,7 @@ Route::name('admin.product.')
         Route::get('products/price-report', 'ProductController@priceReport')->name('products.price-report');
         Route::resource('products', 'ProductController')->except(['show']);
 
+        Route::get('providers/export-members', 'ProviderController@exportMembers')->name('provider.export-members');
         Route::resource('providers', 'ProviderController');
 
         Route::put('provider-items/bulk-toggle', 'ProviderItemController@bulkToggle')->name('provider-items.bulk-toggle');

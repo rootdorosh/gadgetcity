@@ -49,8 +49,8 @@ class ParserService
         //$this->splitProviderItems();
 
         $providers = [
-            'ByryndychokApple',
             'MrFixUa',
+            'ByryndychokApple',
             'restarttradein',
             'ilovephoneopt',
             'applezt',
@@ -170,7 +170,7 @@ class ParserService
 
         $providerItem = ProviderItem::where('provider_id', $provider->id)
             ->where('title', $product['attributes']['title'])
-            ->where('price', $product['attributes']['price'])
+            //->where('price', $product['attributes']['price'])
             ->first();
 
         if (!$providerItem) {
@@ -195,7 +195,7 @@ class ParserService
 
         } else {
             if ($providerItem->price_time < $product['price_time']) {
-                $providerItem->price_time = $product['price_time'];
+                $providerItem->price = $product['attributes']['price'];
                 $providerItem->save();
             }
 
