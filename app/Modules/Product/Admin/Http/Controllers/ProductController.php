@@ -7,6 +7,7 @@ use App\Modules\Product\Models\ProductProviderPrice;
 use App\Modules\Product\Models\Provider;
 use App\Modules\Product\Services\Crud\ProductCrudService;
 use App\Modules\Product\Models\Product;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Session;
 use App\Modules\Product\Admin\Http\Requests\Product\{
     IndexFilter,
@@ -215,12 +216,53 @@ class ProductController extends AdminController
 
     public function exportPriceReportXml()
     {
-        dd($this->getDataForExportPriceReport());
+        $providers = Provider::get()->pluck('pid', 'id')->toArray();
+
+        header('Content-Type: text/xml; charset=utf-8', true); //set document header content type to be XML
+        $xml = new \DOMDocument("1.0", "UTF-8"); // Create new DOM document.
+
+        $itensNode = $xml->createElement("items");
+        $rootNode = $xml->appendChild($itensNode); //add RSS element to XML node
+        $rootNode->setAttribute("version","2.0"); //set RSS version
+        foreach ($this->getDataForExportPriceReport() as $product) {
+            $item = $xml->createElement('item');
+            $rootNode->appendChild($item);
+
+            $productNode = $xml->createElement('product');
+            $item->appendChild($productNode);
+            $productNode->appendChild($xml->createTextNode($product['title']));
+
+            $stockNode = $xml->createElement('stock');
+            $item->appendChild($stockNode);
+            $stockNode->appendChild($xml->createTextNode($product['availability']?'Да':'Нет'));
+
+            $qtyNode = $xml->createElement('qty');
+            $item->appendChild($qtyNode);
+            $qtyNode->appendChild($xml->createTextNode($product['availability']));
+
+            foreach ($product as $k => $prices) {
+                if (substr_count($k, 'provider_') && !empty($product[$k])) {
+                    $providerId = Str::afterLast($k, '_');
+                    $providerPid = $providers[$providerId];
+
+                    $price = round(array_sum(Arr::pluck($prices, 'price')) / count($prices));
+
+                    $providerNode = $xml->createElement($providerPid);
+                    $item->appendChild($providerNode);
+                    $providerNode->appendChild($xml->createTextNode('$' . $price));
+                }
+            }
+        }
+
+
+        echo $xml->saveXML();
+        die();
+
     }
 
     public function exportPriceReportXls()
     {
-
+        dd($this->getDataForExportPriceReport());
     }
 
     /**
@@ -229,7 +271,6 @@ class ProductController extends AdminController
     private function getDataForExportPriceReport(): array
     {
         $period = request()->get('period');
-        $validPeriods = ['today', 'yesterday', 'week', 'month'];
         $timeFrom = $timeTo = 0;
         if ($period === 'today') {
             $timeFrom = strtotime(date('Y-m-d 00:00:00'));
@@ -269,8 +310,9 @@ class ProductController extends AdminController
                     LEFT JOIN product_providers AS provider ON provider_item.provider_id = provider.id
                     WHERE ' . implode(' AND ', $where) . '
                 ) AS count_price'),
-        ])
-        ->havingRaw('count_price > 0');
+            ])
+            ->havingRaw('count_price > 0');
+
         $items = [];
         $rows = $query->get();
 
@@ -316,7 +358,7 @@ class ProductController extends AdminController
         foreach ($rows as $row) {
             $item = [
                 'title' => $row->title,
-                'is_availability' => $row->availability ? 1 : 0,
+                'availability' => $row->availability,
             ];
             foreach ($providers as $provider) {
                 $item['provider_' . $provider->id] = !empty($dataPrice[$row->id][$provider->id]) ? $dataPrice[$row->id][$provider->id] : [];
@@ -325,6 +367,9 @@ class ProductController extends AdminController
             $items[] = $item;
         }
 
+        return $items;
+
+        /*
         return array_filter($items, function ($item) {
             foreach ($item as $k => $v) {
                return true;
@@ -336,6 +381,7 @@ class ProductController extends AdminController
 
             return false;
         });
+        */
     }
 
 }
