@@ -216,14 +216,14 @@ class ProductController extends AdminController
 
     public function exportPriceReportXml()
     {
-        $providers = Provider::get()->pluck('pid', 'id')->toArray();
+        $providers = Provider::where('is_active', '1')->get()->pluck('pid', 'id')->toArray();
 
-        header('Content-Type: text/xml; charset=utf-8', true); //set document header content type to be XML
-        $xml = new \DOMDocument("1.0", "UTF-8"); // Create new DOM document.
+        header('Content-Type: text/xml; charset=utf-8', true);
+        $xml = new \DOMDocument("1.0", "UTF-8");
 
-        $itensNode = $xml->createElement("items");
-        $rootNode = $xml->appendChild($itensNode); //add RSS element to XML node
-        $rootNode->setAttribute("version","2.0"); //set RSS version
+        $itemsNode = $xml->createElement("items");
+        $rootNode = $xml->appendChild($itemsNode);
+        $rootNode->setAttribute("version","2.0");
         foreach ($this->getDataForExportPriceReport() as $product) {
             $item = $xml->createElement('item');
             $rootNode->appendChild($item);
@@ -240,6 +240,7 @@ class ProductController extends AdminController
             $item->appendChild($qtyNode);
             $qtyNode->appendChild($xml->createTextNode($product['availability']));
 
+            /*
             foreach ($product as $k => $prices) {
                 if (substr_count($k, 'provider_') && !empty($product[$k])) {
                     $providerId = Str::afterLast($k, '_');
@@ -252,6 +253,19 @@ class ProductController extends AdminController
                     $providerNode->appendChild($xml->createTextNode('$' . $price));
                 }
             }
+            */
+
+            foreach ($providers as $providerId => $providerPid) {
+                $price = null;
+                if (!empty($product['provider_' . $providerId])) {
+                    $prices = $product['provider_' . $providerId];
+                    $price = '$' . round(array_sum(Arr::pluck($prices, 'price')) / count($prices));
+                }
+                $providerNode = $xml->createElement($providerPid);
+                $item->appendChild($providerNode);
+                $providerNode->appendChild($xml->createTextNode($price));
+            }
+
         }
 
 
