@@ -18,6 +18,11 @@ $product = new \App\Modules\Product\Models\Product;
             'action' => r('admin.product.products.import-availability.post'),
         ])
 
+        @if(Session::has('not_found_products'))
+            {!! Session::get('not_found_products') !!}
+        @endif
+
     </div>
 </div>
 @endsection
+

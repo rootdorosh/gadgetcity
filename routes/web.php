@@ -28,3 +28,13 @@ foreach (CoreHelper::getModules() as $module) {
         include $file;
     }
 }
+
+
+
+Route::name('price-report.export')
+    ->namespace('\App\Modules\Product\Admin\Http\Controllers')
+    ->prefix('price-report/export')
+    ->group(function () {
+        Route::get('xml', 'ProductController@exportPriceReportXml')->name('xml');
+        Route::get('xls', 'ProductController@exportPriceReportXls')->name('xls');
+    });

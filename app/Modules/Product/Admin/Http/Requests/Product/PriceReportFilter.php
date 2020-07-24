@@ -66,7 +66,33 @@ class PriceReportFilter extends BaseFilter
      */
     public function getQueryBuilder() : Builder
     {
-        $query = Product::query();
+        $where = [
+            'product.id = ppp.product_id',
+            'provider.is_active',
+        ];
+
+        if (!empty($this->date_from)) {
+            $timeFrom = strtotime($this->date_from . ' 00:00:00');
+            $where[] = "provider_item.price_time >= $timeFrom";
+
+        }
+        if (!empty($this->date_to)) {
+            $timeTo = strtotime($this->date_to . ' 23:59:59');
+            $where[] = "provider_item.price_time <= $timeTo";
+        }
+
+        $query = Product::query()->select([
+            DB::raw('product.*'),
+            DB::raw('(
+                    SELECT COUNT(*)
+                    FROM product_provider_prices AS ppp
+                    LEFT JOIN product_providers_items AS provider_item ON ppp.provider_item_id = provider_item.id
+                    LEFT JOIN product_providers AS provider ON provider_item.provider_id = provider.id
+                    WHERE ' . implode(' AND ', $where) . '
+                ) AS count_price'),
+        ])
+        ->havingRaw('count_price > 0');
+
 
         if ($this->title !== null) {
             $query->where("title", "like", "%{$this->title}%");
@@ -95,7 +121,7 @@ class PriceReportFilter extends BaseFilter
         $offset = $page * $perPage - $perPage;
 
         $query = $this->getQueryBuilder();
-        $count = $query->count();
+        $count = $this->getCountOfQuery($query);
 
         $items = [];
 

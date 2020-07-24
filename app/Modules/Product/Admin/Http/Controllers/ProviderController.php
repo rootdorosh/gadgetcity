@@ -132,31 +132,4 @@ class ProviderController extends AdminController
 
         return response()->json(null, 204);
     }
-
-    public function exportMembers()
-    {
-        dd(json_decode(file_get_contents('http://88.198.157.69:9000/m.php'), true));
-
-        return response()->streamDownload(function () {
-
-            $fh = \fopen('php://output', 'wb');
-            $head = [
-                'First name',
-                'Last name',
-                'Username',
-                'Phone',
-            ];
-
-            fputcsv($fh, $head);
-
-            $data = json_decode(file_get_contents('http://88.198.157.69:9000/m.php'), true);
-
-            foreach ($data['items'] as $i => $row) {
-                fputcsv($fh, $row);
-            }
-            flush();
-            fclose($fh);
-
-        }, 'members.csv');
-    }
 }
