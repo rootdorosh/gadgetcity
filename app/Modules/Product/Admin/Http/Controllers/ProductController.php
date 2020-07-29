@@ -259,7 +259,10 @@ class ProductController extends AdminController
                 $price = null;
                 if (!empty($product['provider_' . $providerId])) {
                     $prices = $product['provider_' . $providerId];
-                    $price = '$' . round(array_sum(Arr::pluck($prices, 'price')) / count($prices));
+                    usort($prices, function ($a, $b) {  return $a['price_time'] <= $b['price_time'] ? 1 : -1; });
+
+                    //$price = '$' . round(array_sum(Arr::pluck($prices, 'price')) / count($prices));
+                    $price = '$' . $prices[0]['price'];
                 }
                 $providerNode = $xml->createElement($providerPid);
                 $item->appendChild($providerNode);
@@ -267,7 +270,6 @@ class ProductController extends AdminController
             }
 
         }
-
 
         echo $xml->saveXML();
         die();
@@ -361,6 +363,7 @@ class ProductController extends AdminController
                     $dataPrice[$price->product_id][$price->provider_id][] = [
                         'price' => $price->price,
                         'title' => $price->title,
+                        'price_time' => $price->price_time,
                         'date' => $price->price_time ? date('d.m.Y', $price->price_time) : null,
                     ];
                 }

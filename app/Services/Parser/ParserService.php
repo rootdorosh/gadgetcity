@@ -194,7 +194,8 @@ class ParserService
             }
 
         } else {
-            if ($providerItem->price_time < $product['price_time']) {
+
+            if ($providerItem->status != ProviderItem::STATUS_CANCEL && $providerItem->price_time < $product['price_time']) {
                 $providerItem->price = $product['attributes']['price'];
                 $providerItem->save();
             }
