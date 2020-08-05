@@ -45,10 +45,11 @@ class ParserService
         */
 
         //DB::statement('DELETE FROM product_providers_items');
-        //$this->skipLastMessId = true;
+        $this->skipLastMessId = true;
         //$this->splitProviderItems();
 
         $providers = [
+            'appteka',
             'MrFixUa',
             'ByryndychokApple',
             'restarttradein',
@@ -57,7 +58,6 @@ class ParserService
             'iPeople_UA',
             'iDesireKH',
             'optomiphone',
-            'appteka',
             'wearefriendly',
             'imonolit',
             'iCentr_UA',
@@ -107,11 +107,23 @@ class ParserService
         $title = str_ireplace(array_keys($colorsTitleVariants), $colorsTitleVariants, $title);
 
         $colors = $this->getColors();
+        // replace gold/green/space => gold/green/space
+        // replace gold / green / space => gold/green/space
+
+        foreach ($colors as $colorOne) {
+            foreach ($colors as $colorTwo) {
+                $title = str_replace("$colorOne  $colorTwo", "$colorOne/$colorTwo", $title);
+                $title = str_replace("$colorOne / $colorTwo", "$colorOne/$colorTwo", $title);
+                $title = str_replace("$colorOne /$colorTwo", "$colorOne/$colorTwo", $title);
+                $title = str_replace("$colorOne/ $colorTwo", "$colorOne/$colorTwo", $title);
+            }
+        }
 
         $pattern = '/('.implode('|', $colors).')/i';
         preg_match_all($pattern, $title, $match);
 
         if (!empty($match[1])) {
+
             $productColors = array_filter($match[1], function ($value) use ($colors, $title) {
                 return !empty($value) && in_array(strtolower($value), $colors);
             });
@@ -119,12 +131,14 @@ class ParserService
             if (count($productColors) > 1 && substr_count($title, $colorsTitle)) {
                 $products = [];
                 foreach ($productColors as $productColor) {
-                    $products[] = str_ireplace($colorsTitle, $productColor, $title);
+                    $cTitle = str_ireplace($colorsTitle, $productColor, $title);
+                    $cTitle = str_replace("$productColor/", "$productColor ", $cTitle);
+
+                    $products[] = $cTitle;
                 }
                 return $products;
             }
         }
-
         return [$title];
     }
 
@@ -143,15 +157,21 @@ class ParserService
             if (empty($product['attributes']['title']) || strlen($product['attributes']['title']) > 255) {
                 continue;
             }
-
             // split product title by colors: iPhone XS Max 64GB Space/Gold/Red
             $productsByColor = $this->getSplitProductsByColor($product['attributes']['title']);
-            if (count($productsByColor) > 1) {
+
+            if (count($productsByColor) === 1) {
                 $this->parseProviderItem($provider, $product);
             } else {
                 foreach ($productsByColor as $productColorTitle) {
-                    $product['attributes']['title'] = $productColorTitle;
-                    $this->parseProviderItem($provider, $product);
+                    $this->parseProviderItem($provider, [
+                        "attributes" => [
+                            "title" => $productColorTitle,
+                            "price" => $product['attributes']['price'],
+                          ],
+                          "provider_id" => $product['provider_id'],
+                          "price_time" => $product['price_time'],
+                    ]);
                 }
             }
 
