@@ -136,7 +136,6 @@ $(function () {
                 label: "{{ $provider->title }}",
                 filter: false,
                 sortable: false,
-                /*
                 render: function(row) {
                     let items = row['provider_{{ $provider->id }}'];
                     let html = '';
@@ -159,7 +158,6 @@ $(function () {
 
                     return html;
                 }
-                */
             },
             @endforeach
           ],

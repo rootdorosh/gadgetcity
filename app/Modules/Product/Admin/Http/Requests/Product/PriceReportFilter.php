@@ -178,7 +178,7 @@ class PriceReportFilter extends BaseFilter
                 'is_show_provider_item_title' => $this->is_show_provider_item_title ? 1 : 0,
             ];
             foreach ($providers as $provider) {
-
+                /*
                 // last price by period
                 $prices = !empty($dataPrice[$row->id][$provider->id]) ? $dataPrice[$row->id][$provider->id] : [];
                 $price = '';
@@ -188,8 +188,9 @@ class PriceReportFilter extends BaseFilter
                     });
                     isset($prices[0]) ? '$' . $prices[0]['price'] : '';
                 }
+                 */
 
-                $item['provider_' . $provider->id] = $price;
+                $item['provider_' . $provider->id] = !empty($dataPrice[$row->id][$provider->id]) ? $dataPrice[$row->id][$provider->id] : [];
             }
 
             $items[] = $item;
