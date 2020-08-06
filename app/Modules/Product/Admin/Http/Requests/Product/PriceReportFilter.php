@@ -180,9 +180,15 @@ class PriceReportFilter extends BaseFilter
 
                 // last price by period
                 $prices = !empty($dataPrice[$row->id][$provider->id]) ? $dataPrice[$row->id][$provider->id] : [];
-                usort($prices, function ($a, $b) {  return $a['price_time'] <= $b['price_time'] ? 1 : -1; });
+                $price = '';
+                if (count($prices)) {
+                    usort($prices, function ($a, $b) {
+                        return $a['price_time'] <= $b['price_time'] ? 1 : -1;
+                    });
+                    isset($prices[0]) ? '$' . $prices[0]['price'] : '';
+                }
 
-                $item['provider_' . $provider->id] = isset($prices[0]) ? '$' . $prices[0]['price'] : '';;
+                $item['provider_' . $provider->id] = $price;
             }
 
             $items[] = $item;
