@@ -177,7 +177,13 @@ class PriceReportFilter extends BaseFilter
                 'is_show_provider_item_title' => $this->is_show_provider_item_title ? 1 : 0,
             ];
             foreach ($providers as $provider) {
-                $item['provider_' . $provider->id] = !empty($dataPrice[$row->id][$provider->id]) ? $dataPrice[$row->id][$provider->id] : [];
+
+                $prices = !empty($dataPrice[$row->id][$provider->id]) ? $dataPrice[$row->id][$provider->id] : [];
+                usort($prices, function ($a, $b) {  return $a['price_time'] <= $b['price_time'] ? 1 : -1; });
+                $price = '$' . $prices[0]['price'];
+
+
+                $item['provider_' . $provider->id] = $price;
             }
 
             $items[] = $item;

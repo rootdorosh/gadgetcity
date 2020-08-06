@@ -260,8 +260,6 @@ class ProductController extends AdminController
                 if (!empty($product['provider_' . $providerId])) {
                     $prices = $product['provider_' . $providerId];
                     usort($prices, function ($a, $b) {  return $a['price_time'] <= $b['price_time'] ? 1 : -1; });
-
-                    //$price = '$' . round(array_sum(Arr::pluck($prices, 'price')) / count($prices));
                     $price = '$' . $prices[0]['price'];
                 }
                 $providerNode = $xml->createElement($providerPid);
