@@ -162,6 +162,7 @@ class PriceReportFilter extends BaseFilter
                     $dataPrice[$price->product_id][$price->provider_id][] = [
                         'price' => $price->price,
                         'title' => $price->title,
+                        'price_time' => $price->price_time,
                         'date' => $price->price_time ? date('d.m.Y', $price->price_time) : null,
                     ];
                 }
