@@ -246,8 +246,8 @@ class ParserService
     {
         $products = [];
         $mapProcessors = [
-            'iCentr_UA' => 'ICentrUA',
             'imonolit' => 'Imonolit',
+            'iCentr_UA' => 'ICentrUA',
             'wearefriendly' => 'WeareFriendly',
             'appteka' => 'Appteka',
             'optomiphone' => 'OptomIPhone',
@@ -307,11 +307,11 @@ class ParserService
 
         $xml = simplexml_load_string(Curl::getPage($url));
         foreach ($xml->messages->message as $item) {
-            $data[] = [
+            array_unshift($data, [
                 'content' => (string) $item->content,
                 'guid' => (int) $item->id,
                 'price_time' => (int) $item->time,
-            ];
+            ]);
         }
 
         if (count($data)) {
