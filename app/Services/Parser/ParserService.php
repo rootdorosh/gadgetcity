@@ -295,11 +295,11 @@ class ParserService
     {
         $data = [];
 
-        $pid = max(0, $provider->pid - 10);
+        $lastId = max(0,  $provider->last_guid - 10);
 
-        $url = "http://88.198.157.69:9000/index.php?channel=$pid";
+        $url = "http://88.198.157.69:9000/index.php?channel=$provider->pid";
         if (!empty($provider->last_guid) && !$this->skipLastMessId) {
-            $url.= '&min_id=' . $provider->last_guid;
+            $url.= '&min_id=' . $lastId;
         }
 
         $xml = simplexml_load_string(Curl::getPage($url));
