@@ -221,6 +221,9 @@ class ParserService
             }
 
             if ($providerItem->status == ProviderItem::STATUS_ACCEPT) {
+                $providerItem->price = $product['attributes']['price'];
+                $providerItem->price_time = $product['price_time'];
+                $providerItem->save();
 
                 $prices = ProductProviderPrice::where('provider_item_id', $providerItem->id)
                     ->where('product_id', $providerItem->product_id)
@@ -228,7 +231,6 @@ class ParserService
 
                 foreach ($prices as $item) {
                     $item->price = $product['attributes']['price'];
-                    $item->price_time = $product['price_time'];
                     $item->save();
                 }
             }
