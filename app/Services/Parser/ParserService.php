@@ -228,6 +228,7 @@ class ParserService
 
                 foreach ($prices as $item) {
                     $item->price = $product['attributes']['price'];
+                    $item->price_time = $product['price_time'];
                     $item->save();
                 }
             }
