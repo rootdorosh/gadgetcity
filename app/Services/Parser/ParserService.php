@@ -294,7 +294,10 @@ class ParserService
     public function getChannelPosts(Provider $provider) : array
     {
         $data = [];
-        $url = "http://88.198.157.69:9000/index.php?channel=$provider->pid";
+
+        $pid = max(0, $provider->pid - 10);
+
+        $url = "http://88.198.157.69:9000/index.php?channel=$pid";
         if (!empty($provider->last_guid) && !$this->skipLastMessId) {
             $url.= '&min_id=' . $provider->last_guid;
         }
