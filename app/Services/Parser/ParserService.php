@@ -49,18 +49,20 @@ class ParserService
         //$this->splitProviderItems();
 
         $providers = [
+            'iPeople_UA',
+            /*
             'appteka',
             'MrFixUa',
             'ByryndychokApple',
             'restarttradein',
             'ilovephoneopt',
             'applezt',
-            'iPeople_UA',
             'iDesireKH',
             'optomiphone',
             'wearefriendly',
             'imonolit',
             'iCentr_UA',
+            */
         ];
         $providerIds = Provider::where('pid', $providers)->pluck('id')->toArray();
         DB::statement('UPDATE product_providers SET is_active = 0');
@@ -324,7 +326,7 @@ class ParserService
 
     public function getColors(): array
     {
-        return Color::get()->pluck('code')->toArray();
+        return array_map(function($value) { return strtolower($value); }, Color::get()->pluck('code')->toArray());
     }
 
     public function getColorsVariants(): array
