@@ -29,7 +29,54 @@ class Appteka implements IProcessor
             //$line = "11 pro max 256 gold green space (A)";
             //dump($line);
 
-            if (preg_match('/(\)|\s|\/|\-)([0-9]{1,10}\$)/', $line, $match)) {
+            //$line = 'Xs max 64 silver (A/ A-) 620$/600$';
+
+            $replaceGrade = [
+                '/ A)' => '/A)',
+                '/ A+)' => '/A+)',
+                '/ A-)' => '/A-)',
+                '(A /' => '(A/',
+                '(A+ /' => '(A+/',
+                '(A- /' => '(A-/',
+                'A )' => 'A)',
+                'A+ )' => 'A+)',
+                'A- )' => 'A-)',
+            ];
+            dump($line);
+            $line = str_replace(array_keys($replaceGrade), array_values($replaceGrade), $line);
+
+            // 8 64 space/gold/silver (A/A-) 255$/245$
+            if (preg_match('/(\)|\s|\/|\-)([0-9]{1,10}\$)\/([0-9]{1,10}\$)/', $line, $match)) {
+                $price1 = (int) $match[2];
+                $price2 = (int) $match[3];
+                $line = trim(str_replace($match[0], '', $line));
+
+                preg_match('/(A|A\+|A\-)\/(A|A\+|A\-)/', $line, $matchGrade);
+
+                if (isset($matchGrade[2])) {
+
+                    $titleGrade1 = str_replace($matchGrade[0], '(' . $matchGrade[1] . ')', $line);
+                    $titleGrade2 = str_replace($matchGrade[0], '(' . $matchGrade[2] . ')', $line);
+
+                    $products[] = [
+                        'price' => $price1,
+                        'title' => $titleGrade1,
+                    ];
+
+                    $products[] = [
+                        'price' => $price2,
+                        'title' => $titleGrade2,
+                    ];
+                } else {
+                    $products[] = [
+                        'title' => $line,
+                        'price' => $price1,
+                    ];
+                }
+
+                //dd($products);
+
+            } else if (preg_match('/(\)|\s|\/|\-)([0-9]{1,10}\$)/', $line, $match)) {
                 $price = (int)$match[2];
                 $title = trim(str_replace($match[0], '', $line));
                 $products[] = [
