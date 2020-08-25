@@ -49,7 +49,6 @@ class ParserService
         //$this->splitProviderItems();
 
         $providers = [
-            'appteka',
             'iPeople_UA',
             'MrFixUa',
             'ByryndychokApple',
@@ -60,6 +59,7 @@ class ParserService
             'optomiphone',
             'wearefriendly',
             'imonolit',
+            'appteka',
             'iCentr_UA',
         ];
         $providerIds = Provider::where('pid', $providers)->pluck('id')->toArray();
@@ -104,6 +104,10 @@ class ParserService
         $title = str_replace(["\t", "\n", "\r"], "", $title);
 
         $colorsTitleVariants = $this->getColorsVariants();
+        $doubleColors = $this->getDoubleColors();
+        foreach ($doubleColors as $k => $v) {
+            $title = str_ireplace($v, $k, $title);
+        }
         $title = str_ireplace(array_keys($colorsTitleVariants), $colorsTitleVariants, $title);
 
         $colors = $this->getColors();
@@ -127,18 +131,26 @@ class ParserService
             $productColors = array_filter($match[1], function ($value) use ($colors, $title) {
                 return !empty($value) && in_array(strtolower($value), $colors);
             });
+
             $colorsTitle = implode('/', $productColors);
+
             if (count($productColors) > 1 && substr_count($title, $colorsTitle)) {
                 $products = [];
                 foreach ($productColors as $productColor) {
                     $cTitle = str_ireplace($colorsTitle, $productColor, $title);
                     $cTitle = str_replace("$productColor/", "$productColor ", $cTitle);
 
+                    foreach ($doubleColors as $k => $v) {
+                        $cTitle = str_replace($k, $v, $cTitle);
+                    }
+
                     $products[] = $cTitle;
                 }
+
                 return $products;
             }
         }
+
         return [$title];
     }
 
@@ -324,7 +336,18 @@ class ParserService
 
     public function getColors(): array
     {
-        return array_map(function($value) { return strtolower($value); }, Color::get()->pluck('code')->toArray());
+        return array_map(function($value) { return str_replace(' ', '-', strtolower($value)); }, $this->getColorsOriginal());
+    }
+
+    public function getColorsOriginal(): array
+    {
+        $colors = Color::get()->pluck('code')->toArray();
+
+        usort($colors, function ($a, $b) {
+            return substr_count($a, ' ') ? -1 : 1;
+        });
+
+        return array_map(function($value) { return strtolower($value); }, $colors);
     }
 
     public function getColorsVariants(): array
@@ -336,6 +359,19 @@ class ParserService
             foreach ($colors as $colorTwo) {
                 $data[",{$colorFirst} /{$colorTwo}"] = ", {$colorFirst}/{$colorTwo}";
                 $data["{$colorFirst} /{$colorTwo}"] = "{$colorFirst}/{$colorTwo}";
+            }
+        }
+        return $data;
+    }
+
+    public function getDoubleColors(): array
+    {
+        $colors = $this->getColorsOriginal();
+
+        $data = [];
+        foreach ($colors as $color) {
+            if (substr_count($color, ' ')) {
+                $data[str_replace(' ', '-', $color)] = $color;
             }
         }
         return $data;

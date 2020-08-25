@@ -4,6 +4,8 @@ namespace App\Services\Parser\Processors;
 
 class ICentrUA implements IProcessor
 {
+    use GradeTrait;
+
     /*
      * @param string $post
      * @return array
@@ -13,12 +15,6 @@ class ICentrUA implements IProcessor
         $products = [];
         $lines = explode("\n", $post);
 
-        /*
-        print('<pre>');
-        print_r($lines);
-        print('</pre>');
-        */
-
         $groupTitle = null;
         foreach ($lines as $line) {
             $line = str_replace('<br />', '', $line);
@@ -27,12 +23,11 @@ class ICentrUA implements IProcessor
                 continue;
             }
 
-            if (substr_count($line, 'XSM 256 Gray/Silver')) {
-                dd($line);
-            }
+            if ($itemsByGradePrice = $this->getSplitGradePrice($line)) {
+                $products = $itemsByGradePrice;
 
             // ——-MacBook Pro 13”——-
-            if (preg_match('/\—\—\-(.*?)\—\—\-/', $line, $match)) {
+            } elseif (preg_match('/\—\—\-(.*?)\—\—\-/', $line, $match)) {
                 $groupTitle = $match[1];
 
             // 2019 128gb (MVFH2) 850$
@@ -65,11 +60,7 @@ class ICentrUA implements IProcessor
                 }
             }
         }
-        //dd($products);
-        //die();
 
-
-        //die();
         return $products;
     }
 }
