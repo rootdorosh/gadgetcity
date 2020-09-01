@@ -81,7 +81,11 @@ class GoogleSheets extends Command
         sleep(1);
 
         foreach ((new Product)->getDataForExportPriceReport(request()->get('period')) as $product) {
-            $row = [$product['title'], $product['availability']?'Да':'Нет', $product['availability']];
+            $row = [
+                $product['title'],
+                $product['availability']?'Да':'Нет',
+                (string)$product['availability']
+            ];
 
             foreach ($providers as $providerId => $providerPid) {
                 $price = null;
