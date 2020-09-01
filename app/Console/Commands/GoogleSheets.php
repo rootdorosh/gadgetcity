@@ -92,13 +92,12 @@ class GoogleSheets extends Command
             }
 
             $row = array_map(function($value) {
-                return empty($row) ? '' : $row;
+                return empty($value) ? '' : $value;
             }, $row);
 
             $values[] = $row;
         }
-        dd($values);
-
+       
         $body = new \Google_Service_Sheets_ValueRange( [ 'values' => $values] );
 
         // valueInputOption - определяет способ интерпретации входных данных
