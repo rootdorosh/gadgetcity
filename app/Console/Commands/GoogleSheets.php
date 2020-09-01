@@ -87,7 +87,7 @@ class GoogleSheets extends Command
                 $row[] = $price;
             }
 
-            $values[] = $row;
+            //$values[] = $row;
         }
 
         $valueRange->setValues($values);
