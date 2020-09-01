@@ -90,7 +90,7 @@ class GoogleSheets extends Command
                     usort($prices, function ($a, $b) {  return $a['price_time'] <= $b['price_time'] ? 1 : -1; });
                     $price = '$' . $prices[0]['price'];
                 }
-                $row[] = $price;
+                $row[] = '-';
             }
             print_r($row);
             $valueRange->setValues($row);
