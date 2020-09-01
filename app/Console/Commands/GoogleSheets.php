@@ -91,6 +91,10 @@ class GoogleSheets extends Command
                 $row[] = $price;
             }
 
+            $row = array_map(function($value) {
+                return empty($row) ? '' : $row;
+            }, $row);
+
             $values[] = $row;
         }
 
@@ -100,7 +104,6 @@ class GoogleSheets extends Command
         // https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
         // RAW | USER_ENTERED
         $options = array( 'valueInputOption' => 'RAW' );
-
         $service->spreadsheets_values->update( $spreadsheetId, $sheetName . '!A1', $body, $options );
 
     }
