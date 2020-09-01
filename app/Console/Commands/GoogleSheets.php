@@ -84,7 +84,7 @@ class GoogleSheets extends Command
             $row = [
                 $product['title'],
                 $product['availability']?'Да':'Нет',
-                (string)$product['availability']
+                '-', //(string)$product['availability']
             ];
 
             foreach ($providers as $providerId => $providerPid) {
