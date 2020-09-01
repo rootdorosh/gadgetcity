@@ -73,6 +73,12 @@ class GoogleSheets extends Command
         }
 
         $values = [$headers];
+        $valueRange->setValues($values);
+
+        $range = $sheetName . '!A1:A';
+        $conf = ["valueInputOption" => "USER_ENTERED"];
+        $service->spreadsheets_values->append($spreadsheetId, $range, $valueRange, $conf);
+        sleep(1);
 
         foreach ((new Product)->getDataForExportPriceReport(request()->get('period')) as $product) {
             $row = [$product['title'], $product['availability']?'Да':'Нет', $product['availability']];
@@ -86,14 +92,14 @@ class GoogleSheets extends Command
                 }
                 $row[] = $price;
             }
+            print_r($row);
+            $valueRange->setValues($row);
 
-            //$values[] = $row;
+            $range = $sheetName . '!A1:A';
+            $conf = ["valueInputOption" => "USER_ENTERED"];
+            $service->spreadsheets_values->append($spreadsheetId, $range, $valueRange, $conf);
+            sleep(1);
         }
 
-        $valueRange->setValues($values);
-
-        $range = $sheetName . '!A1:A';
-        $conf = ["valueInputOption" => "USER_ENTERED"];
-        $service->spreadsheets_values->append($spreadsheetId, $range, $valueRange, $conf);
     }
 }
