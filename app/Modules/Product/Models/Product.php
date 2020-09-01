@@ -52,6 +52,9 @@ class Product extends Model
         } elseif ($period === 'month') {
             $timeFrom = strtotime('-1 month');
             $timeTo = time();
+        } elseif ($period === '2week') {
+            $timeFrom = strtotime('-2 weeks');
+            $timeTo = time();
         }
 
         $where = [

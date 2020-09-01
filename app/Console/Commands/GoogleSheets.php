@@ -74,7 +74,7 @@ class GoogleSheets extends Command
 
         $values = [$headers];
 
-        foreach ((new Product)->getDataForExportPriceReport('month') as $product) {
+        foreach ((new Product)->getDataForExportPriceReport('2week') as $product) {
             $row = [
                 $product['title'],
                 $product['availability']?'Да':'Нет',
@@ -97,7 +97,7 @@ class GoogleSheets extends Command
 
             $values[] = $row;
         }
-       
+
         $body = new \Google_Service_Sheets_ValueRange( [ 'values' => $values] );
 
         // valueInputOption - определяет способ интерпретации входных данных
