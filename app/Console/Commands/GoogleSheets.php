@@ -73,18 +73,12 @@ class GoogleSheets extends Command
         }
 
         $values = [$headers];
-        $valueRange->setValues($values);
-
-        $range = $sheetName . '!A1:A';
-        $conf = ["valueInputOption" => "USER_ENTERED"];
-        $service->spreadsheets_values->append($spreadsheetId, $range, $valueRange, $conf);
-        sleep(1);
 
         foreach ((new Product)->getDataForExportPriceReport(request()->get('period')) as $product) {
             $row = [
                 $product['title'],
                 $product['availability']?'Да':'Нет',
-                '-', //(string)$product['availability']
+                $product['availability']
             ];
 
             foreach ($providers as $providerId => $providerPid) {
@@ -94,20 +88,20 @@ class GoogleSheets extends Command
                     usort($prices, function ($a, $b) {  return $a['price_time'] <= $b['price_time'] ? 1 : -1; });
                     $price = '$' . $prices[0]['price'];
                 }
-                $row[] = '-';
+                $row[] = $price;
             }
-            
-            // Create the value range Object
-            $valueRange= new \Google_Service_Sheets_ValueRange();
-            // You need to specify the values you insert
-            $valueRange->setValues(["values" => $row]);
-            // Then you need to add some configuration
-            $conf = ["valueInputOption" => "RAW"];
-            // Update the spreadsheet
-            $service->spreadsheets_values->update($spreadsheetId, $range, $valueRange, $conf);
 
-            sleep(1);
+            $values[] = $row;
         }
+
+        $body = new \Google_Service_Sheets_ValueRange( [ 'values' => $values ] );
+
+        // valueInputOption - определяет способ интерпретации входных данных
+        // https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
+        // RAW | USER_ENTERED
+        $options = array( 'valueInputOption' => 'RAW' );
+
+        $service->spreadsheets_values->update( $spreadsheetId, $sheetName . '!A1', $body, $options );
 
     }
 }
