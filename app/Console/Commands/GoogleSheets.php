@@ -97,8 +97,9 @@ class GoogleSheets extends Command
 
             $values[] = $row;
         }
+        dd($values);
 
-        $body = new \Google_Service_Sheets_ValueRange( [ 'values' => $values ] );
+        $body = new \Google_Service_Sheets_ValueRange( [ 'values' => $values] );
 
         // valueInputOption - определяет способ интерпретации входных данных
         // https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
