@@ -74,7 +74,7 @@ class GoogleSheets extends Command
 
         $values = [$headers];
 
-        foreach ((new Product)->getDataForExportPriceReport(request()->get('period')) as $product) {
+        foreach ((new Product)->getDataForExportPriceReport('month') as $product) {
             $row = [
                 $product['title'],
                 $product['availability']?'Да':'Нет',
