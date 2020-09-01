@@ -96,12 +96,16 @@ class GoogleSheets extends Command
                 }
                 $row[] = '-';
             }
-            print_r($row);
-            $valueRange->setValues($row);
+            
+            // Create the value range Object
+            $valueRange= new \Google_Service_Sheets_ValueRange();
+            // You need to specify the values you insert
+            $valueRange->setValues(["values" => $row]);
+            // Then you need to add some configuration
+            $conf = ["valueInputOption" => "RAW"];
+            // Update the spreadsheet
+            $service->spreadsheets_values->update($spreadsheetId, $range, $valueRange, $conf);
 
-            $range = $sheetName . '!A1:A';
-            $conf = ["valueInputOption" => "USER_ENTERED"];
-            $service->spreadsheets_values->append($spreadsheetId, $range, $valueRange, $conf);
             sleep(1);
         }
 
