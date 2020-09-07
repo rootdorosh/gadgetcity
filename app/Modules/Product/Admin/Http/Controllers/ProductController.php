@@ -8,6 +8,7 @@ use App\Modules\Product\Models\Provider;
 use App\Modules\Product\Services\Crud\ProductCrudService;
 use App\Modules\Product\Models\Product;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Session;
 use App\Modules\Product\Admin\Http\Requests\Product\{
     IndexFilter,
@@ -258,4 +259,10 @@ class ProductController extends AdminController
         die();
     }
 
+    public function refreshGoogleTable()
+    {
+        Artisan::call('google:sheets');
+
+        return back()->with('success', __('product::product.success.updated_google_table'));
+    }
 }

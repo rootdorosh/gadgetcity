@@ -5,6 +5,7 @@ Route::name('admin.product.')
     ->prefix('admin/product')
     ->middleware('auth')
     ->group(function () {
+        Route::get('products/refresh-google-table', 'ProductController@refreshGoogleTable')->name('products.refresh-google-table');
         Route::get('products/import-availability', 'ProductController@importAvailability')->name('products.import-availability');
         Route::post('products/import-availability', 'ProductController@importAvailabilityPost')->name('products.import-availability.post');
         Route::get('products/autocomplete', 'ProductController@autocomplete')->name('products.autocomplete');

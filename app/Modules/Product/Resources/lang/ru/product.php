@@ -11,6 +11,7 @@ return [
         'created' => 'Товар успешно создан',
         'updated' => 'Товар успешно отредактирован',
         'imported' => 'Успешно проимпортировано',
+        'updated_google_table' => 'Успешно обновлено',
     ],
     'fields' => [
         'title' => 'Название',
@@ -23,6 +24,7 @@ return [
         'date_range' => 'Диапазон времени',
     ],
     'price_report' => 'Отчет',
+    'refresh_google_table' => 'Обновить в гугл таблицы',
     'import_availability' => [
         'title' => 'Импорт к-ва',
     ],

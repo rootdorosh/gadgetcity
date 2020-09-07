@@ -33,6 +33,12 @@ return [
                 'icon' => 'fa-folder',
                 'permission' => 'product.product.index',
             ],
+            [
+                'title' => __('product::product.refresh_google_table'),
+                'route' => r('admin.product.products.refresh-google-table'),
+                'icon' => 'fa-folder',
+                'permission' => 'product.product.index',
+            ],
         ],
     ],
 ];
