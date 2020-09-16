@@ -166,7 +166,7 @@ class ParserService
 
         foreach ($products as $product) {
 
-            if (empty($product['attributes']['title']) || strlen($product['attributes']['title']) > 255) {
+            if (empty($product['attributes']['title']) || strlen($product['attributes']['title']) > 120) {
                 continue;
             }
             // split product title by colors: iPhone XS Max 64GB Space/Gold/Red
