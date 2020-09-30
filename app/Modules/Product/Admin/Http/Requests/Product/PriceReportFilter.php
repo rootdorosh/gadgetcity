@@ -155,7 +155,7 @@ class PriceReportFilter extends BaseFilter
                 $query->whereRaw("product_providers_items.price_time <= $timeTo");
             }
 
-            dd(self::sql($query));
+            //dd(self::sql($query));
 
             $prices = $query->get();
 
