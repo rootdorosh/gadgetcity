@@ -188,6 +188,8 @@ class PriceReportFilter extends BaseFilter
                     $price = isset($prices[0]) ? '$' . $prices[0]['price'] : '';
                 }
 
+                $item['_provider_' . $provider->id] = $prices;
+
                 $item['provider_' . $provider->id] = $this->is_show_provider_item_title
                     ? !empty($dataPrice[$row->id][$provider->id]) ? $dataPrice[$row->id][$provider->id] : []
                     : $price;
