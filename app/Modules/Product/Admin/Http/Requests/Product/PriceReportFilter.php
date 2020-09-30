@@ -155,8 +155,6 @@ class PriceReportFilter extends BaseFilter
                 $query->whereRaw("product_providers_items.price_time <= $timeTo");
             }
 
-            //dd(self::sql($query));
-
             $prices = $query->get();
 
             foreach ($prices as $price) {
@@ -189,8 +187,6 @@ class PriceReportFilter extends BaseFilter
                     });
                     $price = isset($prices[0]) ? '$' . $prices[0]['price'] : '';
                 }
-
-                $item['_provider_' . $provider->id] = $prices;
 
                 $item['provider_' . $provider->id] = $this->is_show_provider_item_title
                     ? !empty($dataPrice[$row->id][$provider->id]) ? $dataPrice[$row->id][$provider->id] : []

@@ -239,8 +239,8 @@ class ParserService
                 $providerItem->price_time = $product['price_time'];
                 $providerItem->save();
 
-                $prices = ProductProviderPrice::where('provider_item_id', $providerItem->id)
-                    ->where('product_id', $providerItem->product_id)
+                $prices = ProductProviderPrice::query()
+                    ->where('provider_item_id', $providerItem->id)
                     ->get();
 
                 foreach ($prices as $item) {
