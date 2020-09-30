@@ -15,6 +15,9 @@ class Imonolit implements IProcessor
 
         $groupTitle = null;
         foreach ($lines as $line) {
+
+            //$line = 'Apple MacBook Pro 13" 512Gb Touch Bar Space Gray (FR9R2LL/A) 2018  1 400,00<br />';
+
             $line = str_replace('<br />', '', $line);
             $line = trim($line);
             if ($line === '') {
@@ -47,6 +50,20 @@ class Imonolit implements IProcessor
                 $title = trim($title);
 
                 $price = str_replace(",00 USD", "", $match[0]);
+                $price = str_replace(' ', '', $price);
+
+                if ($title !== '') {
+                    $products[] = [
+                        'title' => $title,
+                        'price' => $price,
+                    ];
+                }
+            // title  1 400,00
+            } else if (preg_match('/([0-9]{1,2}\s[0-9]{1,10}\,00)/', $line, $match)) {
+                $title = str_replace($match[0], '', $line);
+                $title = trim($title);
+
+                $price = str_replace(",00", "", $match[0]);
                 $price = str_replace(' ', '', $price);
 
                 if ($title !== '') {

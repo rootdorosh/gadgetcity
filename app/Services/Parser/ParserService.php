@@ -49,6 +49,7 @@ class ParserService
         //$this->splitProviderItems();
 
         $providers = [
+            'imonolit',
             'iPeople_UA',
             'MrFixUa',
             'ByryndychokApple',
@@ -58,7 +59,6 @@ class ParserService
             'iDesireKH',
             'optomiphone',
             'wearefriendly',
-            'imonolit',
             'appteka',
             'iCentr_UA',
         ];
@@ -91,8 +91,6 @@ class ParserService
                         $provider = Provider::find($providerItem->provider_id);
                         $providerItem->delete();
                         $this->parseProviderItem($provider, $product);
-
-                        echo "$providerItem->title \n";
                     }
                 }
             }
@@ -202,10 +200,11 @@ class ParserService
 
         $providerItem = ProviderItem::where('provider_id', $provider->id)
             ->where('title', $product['attributes']['title'])
-            //->where('price', $product['attributes']['price'])
             ->first();
 
+
         if (!$providerItem) {
+
             $productModel = Product::where('title', $product['attributes']['title'])->first();
             // если товар в БД есть с названием как в канале - то сразу ставим цену провайдера
 
@@ -227,8 +226,11 @@ class ParserService
 
         } else {
 
+            echo $providerItem->title . "\n";
+
             if ($providerItem->status != ProviderItem::STATUS_CANCEL && $providerItem->price_time < $product['price_time']) {
                 $providerItem->price = $product['attributes']['price'];
+                $providerItem->price_time = $product['price_time'];
                 $providerItem->save();
             }
 
