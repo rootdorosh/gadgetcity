@@ -49,6 +49,7 @@ class ParserService
         //$this->splitProviderItems();
 
         $providers = [
+            'appteka',
             'imonolit',
             'iPeople_UA',
             'MrFixUa',
@@ -59,7 +60,6 @@ class ParserService
             'iDesireKH',
             'optomiphone',
             'wearefriendly',
-            'appteka',
             'iCentr_UA',
         ];
         $providerIds = Provider::where('pid', $providers)->pluck('id')->toArray();
@@ -226,8 +226,6 @@ class ParserService
 
         } else {
 
-            echo $providerItem->title . "\n";
-
             if ($providerItem->status != ProviderItem::STATUS_CANCEL && $providerItem->price_time < $product['price_time']) {
                 $providerItem->price = $product['attributes']['price'];
                 $providerItem->price_time = $product['price_time'];
@@ -260,14 +258,14 @@ class ParserService
     {
         $products = [];
         $mapProcessors = [
+            'appteka' => 'Appteka',
+            'applezt' => 'Applezt',
             'imonolit' => 'Imonolit',
             'iCentr_UA' => 'ICentrUA',
             'wearefriendly' => 'WeareFriendly',
-            'appteka' => 'Appteka',
             'optomiphone' => 'OptomIPhone',
             'iDesireKH' => 'IDesireKH',
             'iPeople_UA' => 'IPeopleUA',
-            'applezt' => 'Applezt',
             'ilovephoneopt' => 'ILovePhoneOpt',
             'restarttradein' => 'RestartTradeIn',
             'MrFixUa' => 'MrFixUa',
@@ -277,7 +275,7 @@ class ParserService
             "App\Services\Parser\Processors\\" . $mapProcessors[$provider->pid]
             : null;
         if (!$clsProcessor) {
-            echo "Provider $provider->pid processor not set \n";
+            //echo "Provider $provider->pid processor not set \n";
             return [];
         }
 

@@ -17,6 +17,7 @@ trait GradeTrait
     {
         //$line = 'Xr 64gb red/space/coral/blue/red 500$/480$ (А/A-)';
         //$line = 'Xr 64gb red/space/coral/blue/red 500/480$ (А/A-)';
+        //$line = '11 pro max 64 space/silver A/A+ (SM) 880-890$';
 
         $replaceGrade = [
             '/ A)' => '/A)',
@@ -38,17 +39,25 @@ trait GradeTrait
             'А+ )' => 'А+)',
             'А- )' => 'А-)',
         ];
+
         $line = str_replace(array_keys($replaceGrade), array_values($replaceGrade), $line);
         $gradeValues = ['А', 'А+', 'А-', 'A', 'A+', 'A-'];
         $gradeVariants = [];
+        $gradeVariantsTwo = [];
         foreach ($gradeValues as $one) {
             foreach ($gradeValues as $two) {
                 $gradeVariants[] = sprintf('(%s/%s)', $one, $two);
+                $gradeVariantsTwo[] = sprintf('%s/%s', $one, $two);
             }
         }
 
-        if (preg_match('/(\)|\s|\/|\-)([0-9]{1,10})\/([0-9]{1,10}\$)/', $line, $match) ||
-            preg_match('/(\)|\s|\/|\-)([0-9]{1,10}\$)\/([0-9]{1,10}\$)/', $line, $match)
+        if (
+            //Xr 64gb red/space/coral/blue/red 500$/480$ (А/A-)
+            preg_match('/(\)|\s|\/|\-)([0-9]{1,10}\$)\/([0-9]{1,10}\$)/', $line, $match) ||
+            //Xr 64gb red/space/coral/blue/red 500/480$ (А/A-)
+            preg_match('/(\)|\s|\/|\-)([0-9]{1,10})\/([0-9]{1,10}\$)/', $line, $match) ||
+            //11 pro max 64 space/silver A/A+ (SM) 880-890$
+            preg_match('/(\)|\s|\/|\-)([0-9]{1,10})\-([0-9]{1,10}\$)/', $line, $match)
         ) {
             $products = [];
 
@@ -72,6 +81,21 @@ trait GradeTrait
                     ];
 
                     return $products;
+                }
+            }
+
+            foreach ($gradeVariantsTwo as $gradeVariant) {
+                if (substr_count($line, $gradeVariant)) {
+                    $grades = explode('/', $gradeVariant);
+                    $products[] = [
+                        'price' => $price1,
+                        'title' => str_replace($gradeVariant, $grades[0], $line),
+                    ];
+
+                    $products[] = [
+                        'price' => $price2,
+                        'title' => str_replace($gradeVariant, $grades[1], $line),
+                    ];
                 }
             }
 

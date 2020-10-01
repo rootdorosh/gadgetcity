@@ -13,9 +13,14 @@ class Appteka implements IProcessor
     public function parse(string $post): array
     {
         $products = [];
-        $lines = explode("\n", $post);
 
-        //dd($lines);
+        $lines = array_map(function ($value) {
+            $value = preg_replace('/[[:^print:]]/', '', $value);
+            $value = str_replace(['<br />', '<br/>', '<br>', "\r", "\t"], '', $value);
+            $value = trim($value);
+            $value = trim($value);
+            return $value;
+        }, explode("\n", $post));
 
         $groupTitle = null;
 
