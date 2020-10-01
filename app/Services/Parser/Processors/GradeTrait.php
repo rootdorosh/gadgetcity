@@ -29,25 +29,45 @@ trait GradeTrait
             'A )' => 'A)',
             'A+ )' => 'A+)',
             'A- )' => 'A-)',
-            '/ А)' => '/А)',
-            '/ А+)' => '/А+)',
-            '/ А-)' => '/А-)',
-            '(А /' => '(А/',
-            '(А+ /' => '(А+/',
-            '(А- /' => '(А-/',
-            'А )' => 'А)',
-            'А+ )' => 'А+)',
-            'А- )' => 'А-)',
+            '/ А)' => '/A)',
+            '/ А+)' => '/A+)',
+            '/ А-)' => '/A-)',
+            '(А /' => '(A/',
+            '(А+ /' => '(A+/',
+            '(А- /' => '(A-/',
+            'А )' => 'A)',
+            'А+ )' => 'A+)',
+            'А- )' => 'A-)',
+            '(A/A- ' => '(A/A-) ',
+            '(A/A+ ' => '(A/A+) ',
+            '(A-/A ' => '(A-/A) ',
+            '(A-/A+ ' => '(A-/A+) ',
+            '(A+/A ' => '(A+/A) ',
+            '(A+/A- ' => '(A+/A-) ',
+
+            '(А/А- ' => '(A/A-) ',
+            '(А/А+ ' => '(A/A+) ',
+            '(А-/А ' => '(A-/A) ',
+            '(А-/А+ ' => '(A-/A+) ',
+            '(А+/А ' => '(A+/A) ',
+            '(А+/А- ' => '(A+/A-) ',
+
+            'А/А+' => 'A/A+',
+            'А/А-' => 'A/A-',
+            'А+/А' => 'A+/A',
+            'А+/А-' => 'A+/A-',
+            'А-/А' => 'A-/A',
+            'А-/А-' => 'A-/A+',
         ];
 
         $line = str_replace(array_keys($replaceGrade), array_values($replaceGrade), $line);
-        $gradeValues = ['А', 'А+', 'А-', 'A', 'A+', 'A-'];
+        $gradeValues = ['A+', 'A-', 'A'];
         $gradeVariants = [];
         $gradeVariantsTwo = [];
         foreach ($gradeValues as $one) {
             foreach ($gradeValues as $two) {
-                $gradeVariants[] = sprintf('(%s/%s)', $one, $two);
-                $gradeVariantsTwo[] = sprintf('%s/%s', $one, $two);
+                $gradeVariants[$one.'_'.$two] = sprintf('(%s/%s)', $one, $two);
+                $gradeVariantsTwo[$one.'_'.$two] = sprintf('%s/%s', $one, $two);
             }
         }
 
@@ -59,6 +79,7 @@ trait GradeTrait
             //11 pro max 64 space/silver A/A+ (SM) 880-890$
             preg_match('/(\)|\s|\/|\-)([0-9]{1,10})\-([0-9]{1,10}\$)/', $line, $match)
         ) {
+
             $products = [];
 
             $price1 = (int)$match[2];
@@ -87,6 +108,7 @@ trait GradeTrait
             foreach ($gradeVariantsTwo as $gradeVariant) {
                 if (substr_count($line, $gradeVariant)) {
                     $grades = explode('/', $gradeVariant);
+
                     $products[] = [
                         'price' => $price1,
                         'title' => str_replace($gradeVariant, $grades[0], $line),
@@ -96,6 +118,8 @@ trait GradeTrait
                         'price' => $price2,
                         'title' => str_replace($gradeVariant, $grades[1], $line),
                     ];
+
+                    return $products;
                 }
             }
 
