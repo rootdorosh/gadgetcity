@@ -49,8 +49,8 @@ class ParserService
         //$this->splitProviderItems();
 
         $providers = [
-            'appteka',
             'imonolit',
+            'appteka',
             'iPeople_UA',
             'MrFixUa',
             'ByryndychokApple',
@@ -233,6 +233,7 @@ class ParserService
             }
 
             if ($providerItem->status == ProviderItem::STATUS_ACCEPT) {
+                dump($product);
                 $providerItem->price = $product['attributes']['price'];
                 $providerItem->price_time = $product['price_time'];
                 $providerItem->save();
@@ -335,8 +336,10 @@ class ParserService
                 'content' => (string) $item['message'],
                 'guid' => (int) $item['id'],
                 'price_time' => (int) $item['date'],
+                'date' => date('Y-m-d', $item['date']),
             ]);
         }
+        //dump($data);
 
         if (count($data)) {
             $provider->last_guid = end($data)['guid'];
@@ -362,6 +365,9 @@ class ParserService
         return array_map(function($value) { return strtolower($value); }, $colors);
     }
 
+    /**
+     * @return array
+     */
     public function getColorsVariants(): array
     {
         $colors = $this->getColors();
@@ -376,6 +382,9 @@ class ParserService
         return $data;
     }
 
+    /**
+     * @return array
+     */
     public function getDoubleColors(): array
     {
         $colors = $this->getColorsOriginal();
@@ -387,5 +396,32 @@ class ParserService
             }
         }
         return $data;
+    }
+
+    /**
+     *
+     */
+    public function textSync()
+    {
+        ProviderItem::whereRaw("title LIKE '%А%'")->chunk(100, function ($items) {
+            foreach ($items as $item) {
+                $title = $string = preg_replace('/[[:^print:][а-яА-Я]/', '', $item->title);
+                echo "$title : $item->title\n";
+
+               if (mb_substr_count($item->title, 'А', 'UTF-8')) {
+
+                   $parts = explode('А', $item->title);
+                   dump($parts);
+                   if (count($parts) > 1) {
+
+                       $item->title = replate_to_letter_a($item->title);
+                       $item->save();
+
+                       echo $item->title . "\n";
+                       echo $item->id . "\n";
+                   }
+               }
+            }
+        });
     }
 }

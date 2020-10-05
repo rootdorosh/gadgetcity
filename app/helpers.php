@@ -120,3 +120,11 @@ function telegram_post_is_inline(array $array) {
 
     return true;
 }
+
+/**
+ * @param string $value
+ */
+function replate_to_letter_a(string $value) {
+    $parts = explode('А', $value);
+    return implode('A', $parts);
+}
