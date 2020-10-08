@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 return [
     'title' => 'Модуль "Product"',
@@ -41,6 +41,13 @@ return [
                 'product.providerItem.update' => 'permission.update',
                 'product.providerItem.show' => 'permission.show',
                 'product.providerItem.destroy' => 'permission.destroy',
+            ],
+        ],
+        'providerLog' => [
+            'title' => 'ProviderLog',
+            'actions' => [
+                'product.providerLog.index' => 'permission.index',
+                'product.providerLog.destroy' => 'permission.destroy',
             ],
         ],
     ],

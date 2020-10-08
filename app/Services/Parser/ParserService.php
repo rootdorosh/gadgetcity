@@ -233,7 +233,6 @@ class ParserService
             }
 
             if ($providerItem->status == ProviderItem::STATUS_ACCEPT) {
-                dump($product);
                 $providerItem->price = $product['attributes']['price'];
                 $providerItem->price_time = $product['price_time'];
                 $providerItem->save();
@@ -281,7 +280,7 @@ class ParserService
         }
 
         foreach ($posts as $post) {
-            foreach ($this->postParse((new $clsProcessor), $post['content']) as $item) {
+            foreach ($this->postParse((new $clsProcessor), $post, $provider) as $item) {
                 $products[] = [
                     'attributes' => $item,
                     'provider_id' => $provider->id,
@@ -292,15 +291,20 @@ class ParserService
         return $products;
     }
 
-    /*
+    /**
      * @param IProcessor $processor
-     * @param string $post
-     *
+     * @param array $post
+     * @param Provider $provider
      * @return array
      */
-    public function postParse(IProcessor $processor, string $post): array
+    public function postParse(IProcessor $processor, array $post, Provider $provider): array
     {
-        return $processor->parse($post);
+        $attributes = [
+            'provider_id' => $provider->id,
+            'message_time' => $post['price_time'],
+        ];
+
+        return $processor->parse($post['content'], $attributes);
     }
 
     /**
@@ -339,7 +343,6 @@ class ParserService
                 'date' => date('Y-m-d', $item['date']),
             ]);
         }
-        //dump($data);
 
         if (count($data)) {
             $provider->last_guid = end($data)['guid'];
@@ -411,7 +414,6 @@ class ParserService
                if (mb_substr_count($item->title, 'А', 'UTF-8')) {
 
                    $parts = explode('А', $item->title);
-                   dump($parts);
                    if (count($parts) > 1) {
 
                        $item->title = replate_to_letter_a($item->title);

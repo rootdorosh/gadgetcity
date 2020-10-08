@@ -4,11 +4,12 @@ namespace App\Services\Parser\Processors;
 
 class OptomIPhone implements IProcessor
 {
-    /*
+    /**
      * @param string $post
+     * @param array $params
      * @return array
      */
-    public function parse(string $post): array
+    public function parse(string $post, array $params = []): array
     {
         $products = [];
         $lines = explode("\n", $post);

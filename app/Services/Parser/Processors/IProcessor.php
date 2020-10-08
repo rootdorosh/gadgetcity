@@ -4,5 +4,10 @@ namespace App\Services\Parser\Processors;
 
 interface IProcessor
 {
-    public function parse(string $post): array;
+    /**
+     * @param string $post
+     * @param array $params
+     * @return array
+     */
+    public function parse(string $post, array $params = []): array;
 }

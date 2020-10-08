@@ -28,6 +28,12 @@ return [
                 'permission' => 'product.provideritem.index',
             ],
             [
+                'title' => 'Log',
+                'route' => r('admin.product.provider-logs.index'),
+                'icon' => 'fa-folder',
+                'permission' => 'product.providerlog.index',
+            ],
+            [
                 'title' => __('product::product.price_report'),
                 'route' => r('admin.product.products.price-report'),
                 'icon' => 'fa-folder',

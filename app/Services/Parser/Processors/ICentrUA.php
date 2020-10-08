@@ -6,11 +6,12 @@ class ICentrUA implements IProcessor
 {
     use GradeTrait;
 
-    /*
+    /**
      * @param string $post
+     * @param array $params
      * @return array
      */
-    public function parse(string $post): array
+    public function parse(string $post, array $params = []): array
     {
         $products = [];
         $lines = explode("\n", $post);

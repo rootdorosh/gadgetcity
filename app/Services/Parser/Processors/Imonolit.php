@@ -2,13 +2,16 @@
 
 namespace App\Services\Parser\Processors;
 
+use App\Modules\Product\Models\ProviderLog;
+
 class Imonolit implements IProcessor
 {
-    /*
+    /**
      * @param string $post
+     * @param array $params
      * @return array
      */
-    public function parse(string $post): array
+    public function parse(string $post, array $params = []): array
     {
         $products = [];
         $lines = explode("\n", $post);
@@ -110,6 +113,9 @@ class Imonolit implements IProcessor
                     ];
                     //dd($products);
                 }
+            } else {
+                $params['content'] = $line;
+                ProviderLog::add($params);
             }
         }
         //dd($products);

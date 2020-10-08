@@ -19,4 +19,6 @@ Route::name('admin.product.')
         Route::delete('provider-items/remove-price/{priceId}', 'ProviderItemController@removePrice');
         Route::resource('provider-items', 'ProviderItemController');
 
+        Route::get('provider-logs', 'ProviderLogController@index')->name('provider-logs.index');
+        Route::delete('provider-logs/{providerLog}', 'ProviderLogController@destroy')->name('provider-logs.destroy');
     });
