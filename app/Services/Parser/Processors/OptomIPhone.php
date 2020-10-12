@@ -2,6 +2,8 @@
 
 namespace App\Services\Parser\Processors;
 
+use App\Modules\Product\Models\ProviderLog;
+
 class OptomIPhone implements IProcessor
 {
     /**
@@ -29,6 +31,10 @@ class OptomIPhone implements IProcessor
                     'title' => $title,
                     'price' => $price,
                 ];
+            } else {
+                $params['content'] = $line;
+                ProviderLog::add($params);
+
             }
         }
 

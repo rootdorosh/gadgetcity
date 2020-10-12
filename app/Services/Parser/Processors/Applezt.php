@@ -2,6 +2,8 @@
 
 namespace App\Services\Parser\Processors;
 
+use App\Modules\Product\Models\ProviderLog;
+
 class Applezt implements IProcessor
 {
     /**
@@ -22,6 +24,9 @@ class Applezt implements IProcessor
 
         foreach ($lines as $line) {
             if (substr_count($line, 'грн') && !substr_count($line, '$')) {
+                $params['content'] = $line;
+                ProviderLog::add($params);
+
                 continue;
             }
 
@@ -41,6 +46,9 @@ class Applezt implements IProcessor
                     'title' => $title,
                     'price' => $price,
                 ];
+            } else {
+                $params['content'] = $line;
+                ProviderLog::add($params);
             }
         }
 

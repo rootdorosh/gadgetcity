@@ -2,6 +2,8 @@
 
 namespace App\Services\Parser\Processors;
 
+use App\Modules\Product\Models\ProviderLog;
+
 class Appteka implements IProcessor
 {
     use GradeTrait;
@@ -51,6 +53,9 @@ class Appteka implements IProcessor
                     'title' => $title,
                     'price' => $price,
                 ];
+            } else {
+                $params['content'] = $line;
+                ProviderLog::add($params);
             }
 
         }

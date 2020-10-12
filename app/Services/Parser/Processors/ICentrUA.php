@@ -2,6 +2,8 @@
 
 namespace App\Services\Parser\Processors;
 
+use App\Modules\Product\Models\ProviderLog;
+
 class ICentrUA implements IProcessor
 {
     use GradeTrait;
@@ -59,6 +61,9 @@ class ICentrUA implements IProcessor
                         'price' => $match[1],
                     ];
                 }
+            } else {
+                $params['content'] = $line;
+                ProviderLog::add($params);
             }
         }
 

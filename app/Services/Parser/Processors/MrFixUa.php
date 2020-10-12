@@ -2,6 +2,8 @@
 
 namespace App\Services\Parser\Processors;
 
+use App\Modules\Product\Models\ProviderLog;
+
 class MrFixUa implements IProcessor
 {
     /**
@@ -46,6 +48,10 @@ class MrFixUa implements IProcessor
                     'title' => $title,
                     'price' => $price,
                 ];
+            } else {
+                $params['content'] = $line;
+                ProviderLog::add($params);
+
             }
         }
 

@@ -2,6 +2,8 @@
 
 namespace App\Services\Parser\Processors;
 
+use App\Modules\Product\Models\ProviderLog;
+
 class WeareFriendly implements IProcessor
 {
     /**
@@ -77,6 +79,10 @@ class WeareFriendly implements IProcessor
                     'price' => (int) $match[0],
                     'title' => $title,
                 ];
+            } else {
+                $params['content'] = $line;
+                ProviderLog::add($params);
+
             }
         }
 

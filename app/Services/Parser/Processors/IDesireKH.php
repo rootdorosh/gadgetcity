@@ -2,6 +2,8 @@
 
 namespace App\Services\Parser\Processors;
 
+use App\Modules\Product\Models\ProviderLog;
+
 class iDesireKH implements IProcessor
 {
     /**
@@ -29,6 +31,10 @@ class iDesireKH implements IProcessor
                     'title' => $title,
                     'price' => $price,
                 ];
+            } else {
+                $params['content'] = $line;
+                ProviderLog::add($params);
+
             }
         }
 
