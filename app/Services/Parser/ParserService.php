@@ -107,7 +107,6 @@ class ParserService
             $title = str_ireplace($v, $k, $title);
         }
         $title = str_ireplace(array_keys($colorsTitleVariants), $colorsTitleVariants, $title);
-
         $colors = $this->getColors();
         // replace gold/green/space => gold/green/space
         // replace gold / green / space => gold/green/space
@@ -115,6 +114,7 @@ class ParserService
         foreach ($colors as $colorOne) {
             foreach ($colors as $colorTwo) {
                 $title = str_replace("$colorOne  $colorTwo", "$colorOne/$colorTwo", $title);
+                $title = str_replace("$colorOne $colorTwo", "$colorOne/$colorTwo", $title);
                 $title = str_replace("$colorOne / $colorTwo", "$colorOne/$colorTwo", $title);
                 $title = str_replace("$colorOne /$colorTwo", "$colorOne/$colorTwo", $title);
                 $title = str_replace("$colorOne/ $colorTwo", "$colorOne/$colorTwo", $title);
