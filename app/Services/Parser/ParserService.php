@@ -49,18 +49,18 @@ class ParserService
         //$this->splitProviderItems();
 
         $providers = [
-            'imonolit',
             'appteka',
+            'restarttradein',
+            'iCentr_UA',
+            'imonolit',
             'iPeople_UA',
             'MrFixUa',
             'ByryndychokApple',
-            'restarttradein',
             'ilovephoneopt',
             'applezt',
             'iDesireKH',
             'optomiphone',
             'wearefriendly',
-            'iCentr_UA',
         ];
         $providerIds = Provider::where('pid', $providers)->pluck('id')->toArray();
         DB::statement('UPDATE product_providers SET is_active = 0');
@@ -125,6 +125,14 @@ class ParserService
         preg_match_all($pattern, $title, $match);
 
         if (!empty($match[1])) {
+            dump($match);
+            foreach ($match[1] as $i=>$matchVal) {
+                if ($matchVal === 'mat' && substr_count($title, 'matte')) {
+                    $match[1][$i] = 'matte';
+                } elseif ($matchVal === 'mat' && substr_count($title, 'matt')) {
+                    $match[1][$i] = 'matt';
+                }
+            }
 
             $productColors = array_filter($match[1], function ($value) use ($colors, $title) {
                 return !empty($value) && in_array(strtolower($value), $colors);
@@ -144,7 +152,6 @@ class ParserService
 
                     $products[] = $cTitle;
                 }
-
                 return $products;
             }
         }
@@ -164,7 +171,7 @@ class ParserService
 
         foreach ($products as $product) {
 
-            if (empty($product['attributes']['title']) || strlen($product['attributes']['title']) > 120) {
+            if (empty($product['attributes']['title']) || strlen($product['attributes']['title']) > 190) {
                 continue;
             }
             // split product title by colors: iPhone XS Max 64GB Space/Gold/Red
@@ -359,7 +366,7 @@ class ParserService
 
     public function getColorsOriginal(): array
     {
-        $colors = Color::get()->pluck('code')->toArray();
+        $colors = Color::orderByRaw('CHAR_LENGTH(code) ASC')->get()->pluck('code')->toArray();
 
         usort($colors, function ($a, $b) {
             return substr_count($a, ' ') ? -1 : 1;

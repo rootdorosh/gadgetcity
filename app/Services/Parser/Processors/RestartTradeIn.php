@@ -23,6 +23,8 @@ class RestartTradeIn implements IProcessor
 
 
         foreach ($lines as $line) {
+            //$line = 'Хороший Macbook Pro 13” (2017г) MPXQ2 i5 8gb 128ssd (650 циклов) цена 🔥 🔥 🔥 790$ полный комплект!';
+
             $stopWords = [];
             $continue = false;
             foreach ($stopWords as $stopWord) {
@@ -30,6 +32,7 @@ class RestartTradeIn implements IProcessor
                     $continue = true;
                 }
             }
+
             if ($continue) {
                 continue;
             }

@@ -20,6 +20,11 @@ class ICentrUA implements IProcessor
 
         $groupTitle = null;
         foreach ($lines as $line) {
+            //$line = '◾️7 32gb rose/matt 180$ A/A-<br />';
+            if (substr_count($line, 'rose/matte')) {
+                //echo $line . "\n";
+            }
+
             $line = str_replace('<br />', '', $line);
             $line = trim($line);
             if ($line === '') {
@@ -66,6 +71,8 @@ class ICentrUA implements IProcessor
                 ProviderLog::add($params);
             }
         }
+
+        //dd($products);
 
         return $products;
     }
