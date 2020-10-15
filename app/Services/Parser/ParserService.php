@@ -50,7 +50,6 @@ class ParserService
 
         $providers = [
             'appteka',
-            /*
             'restarttradein',
             'iCentr_UA',
             'imonolit',
@@ -62,7 +61,6 @@ class ParserService
             'iDesireKH',
             'optomiphone',
             'wearefriendly',
-            */
         ];
         $providerIds = Provider::where('pid', $providers)->pluck('id')->toArray();
         DB::statement('UPDATE product_providers SET is_active = 0');

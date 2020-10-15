@@ -30,7 +30,7 @@ class Appteka implements IProcessor
 
         // title 1510$ || title 1510 $
         foreach ($lines as $line) {
-            $line = 'X 256 space silver (A/A-) 495$/470$<br />';
+            //$line = 'X 256 space silver (A/A-) 495$/470$<br />';
             $line = strip_tags($line);
 
             $line = trim($line);
