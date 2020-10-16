@@ -38,10 +38,6 @@ class Appteka implements IProcessor
                 $line = rtrim($line, ' $') . '$';
             }
 
-            if (substr_count($line, 'X 256 space silver')) {
-                dd($line);
-            }
-
             if ($itemsByGradePrice = $this->getSplitGradePrice($line)) {
                 $products = $itemsByGradePrice;
 
@@ -66,6 +62,10 @@ class Appteka implements IProcessor
 
         }
 
+        if (substr_count($line, 'X 256 space silver')) {
+            dump($line);
+            dump($products);
+        }
         //dd($products);
 
         return $products;
