@@ -15,6 +15,8 @@ class Appteka implements IProcessor
      */
     public function parse(string $post, array $params = []): array
     {
+        dump($post);
+
         $products = [];
 
         $lines = array_map(function ($value) {
