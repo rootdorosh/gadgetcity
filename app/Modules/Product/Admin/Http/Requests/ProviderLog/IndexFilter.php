@@ -82,10 +82,9 @@ class IndexFilter extends BaseFilter
             $query->where("product_provider_log.provider_id", $this->provider_id);
         }
 
-        if ($this->content !== null) {
-            $query->where("product_provider_log.content", "like", "%{$this->content}%");
+        if (!empty($_GET['content'])) {
+            $query->where("product_provider_log.content", "like", '%'.$_GET['content'].'%');
         }
-
         return $query;
     }
 

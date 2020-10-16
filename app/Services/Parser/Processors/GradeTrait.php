@@ -58,9 +58,16 @@ trait GradeTrait
             'А+/А-' => 'A+/A-',
             'А-/А' => 'A-/A',
             'А-/А-' => 'A-/A+',
+            'A)' => 'A) ',
+            'A-)' => 'A+) ',
+            'A+)' => 'A-) ',
         ];
 
+        //XR 64 black/coral/white/blue (A/A-)450$/425$
+
         $line = str_replace(array_keys($replaceGrade), array_values($replaceGrade), $line);
+        $line = str_replace('  ', ' ', $line);
+
         $gradeValues = ['A+', 'A-', 'A'];
         $gradeVariants = [];
         $gradeVariantsTwo = [];

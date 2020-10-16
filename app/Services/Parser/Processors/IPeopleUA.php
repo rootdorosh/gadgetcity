@@ -22,7 +22,24 @@ class IPeopleUA implements IProcessor
 
         // title 1510$ || title - 1510$
         foreach ($lines as $line) {
-            $line = str_replace('@ipeopleDima (Діма/0962099009)', '', $line);
+            //$line = "MacBook Pro 15' <strong>2015</strong> (MJLQ2) i7/16/256 - 990$ A/A+<br />";
+            $line = strip_tags($line);
+
+            $stopWords = ['<a href=', 'ipeopleDima', '0962099009'];
+            $hasStopWord = false;
+            foreach ($stopWords as $stopWord) {
+                if (substr_count($line, $stopWord)) {
+                    $params['content'] = $line;
+                    ProviderLog::add($params);
+
+                    $hasStopWord = true;
+                    continue;
+                }
+            }
+            if ($hasStopWord) {
+                continue;
+            }
+
             if (preg_match('/\s([0-9]{1,10}\$)/', $line, $match)) {
                 $price = (int)$match[0];
                 $title = str_replace(' - ' . $match[0], '', $line);
@@ -33,14 +50,19 @@ class IPeopleUA implements IProcessor
                     'price' => $price,
                 ];
             } elseif (preg_match('/\s([0-9]{1,10})$/', $line, $match)) {
-                $price = (int)$match[0];
+
+                $price = (int)$match[1];
                 if ($price > 10000) {
+                    $params['content'] = $line;
+                    ProviderLog::add($params);
                     continue;
                 }
 
-                $title = str_replace(' - ' . $match[0], '', $line);
-                $title = trim(str_replace($match[0], '', $title));
-                $title = trim($title, ' -');
+                $title = rtrim($line, $match[1]);
+                $title = trim($title);
+                $title = rtrim($title, '-');
+                $title = trim($title);
+
                 $products[] = [
                     'title' => $title,
                     'price' => $price,
@@ -50,6 +72,8 @@ class IPeopleUA implements IProcessor
                 ProviderLog::add($params);
             }
         }
+
+        //dd($products);
 
         return $products;
     }

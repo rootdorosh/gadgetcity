@@ -44,12 +44,17 @@ class ProviderLog extends Model
 
     /**
      * @param array $attributes
-     * @return static
+     * @return static|null
      */
-    public static function add(array $attributes): self
+    public static function add(array $attributes):? self
     {
         $data = $attributes;
         $data['create_time'] = time();
+
+        $data['content'] = trim($data['content']);
+        if (empty($data['content'])) {
+            return null;
+        }
 
         return self::firstOrCreate($attributes, $data);
     }

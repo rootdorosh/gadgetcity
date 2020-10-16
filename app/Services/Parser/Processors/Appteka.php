@@ -15,8 +15,6 @@ class Appteka implements IProcessor
      */
     public function parse(string $post, array $params = []): array
     {
-        dump($post);
-
         $products = [];
 
         $lines = array_map(function ($value) {
@@ -32,17 +30,29 @@ class Appteka implements IProcessor
 
         // title 1510$ || title 1510 $
         foreach ($lines as $line) {
-            //$line = 'X 256 space silver (A/A-) 495$/470$<br />';
+            //$line = '11 Pro max 64 gold space green  (A-) 860-870$';
+            //$line = '11 Pro max 256 green space gold (А-) 950-970$';
+            echo $line . "\n";
+
             $line = strip_tags($line);
             $line = trim($line);
+
+            if (substr_count($line, 'MMGF2')) {
+                //dump($line);
+            }
 
             if (substr($line, -2) === ' $') {
                 $line = rtrim($line, ' $') . '$';
             }
 
             if ($itemsByGradePrice = $this->getSplitGradePrice($line)) {
-                $products = $itemsByGradePrice;
+                if (count($itemsByGradePrice) === 1) {
+                    $itemsByGradePrice[0]['title'] = str_replace('(-)', '(A-)', $itemsByGradePrice[0]['title']);
+                    $itemsByGradePrice[0]['title'] = str_replace('(+)', '(A+)', $itemsByGradePrice[0]['title']);
+                    $itemsByGradePrice[0]['title'] = str_replace('()', '(A)', $itemsByGradePrice[0]['title']);
+                }
 
+                //MacBook Pro 13\" 2015 MF841 /i5/8/512gb, 352ц (A-) 700$
             } else if (preg_match('/(\)|\s|\/|\-)([0-9]{1,10}\$)/', $line, $match)) {
                 $price = (int)$match[2];
                 $title = trim(str_replace($match[0], '', $line));
@@ -50,7 +60,8 @@ class Appteka implements IProcessor
                     'title' => $title,
                     'price' => $price,
                 ];
-            } elseif (preg_match('/(\)|\s|\/|\-)([0-9]{2,10})/', $line, $match)) {
+            //MacBook Pro 13\" 2015 MF841 /i5/8/512gb, 352ц (A-) 700
+            } elseif (preg_match('/(\)|\s|\/|\-)([0-9]{2,10})$/', $line, $match)) {
                 $price = (int)$match[2];
                 $title = trim(str_replace($match[0], '', $line));
                 $products[] = [
@@ -62,13 +73,12 @@ class Appteka implements IProcessor
                 ProviderLog::add($params);
             }
 
+            //dd($products);
+
         }
 
         if (substr_count($line, 'X 256 space silver')) {
-            dump($line);
-            dump($products);
         }
-        //dd($products);
 
         return $products;
     }

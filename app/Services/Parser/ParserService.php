@@ -44,17 +44,18 @@ class ParserService
         }
         */
 
+        //DB::statement('DELETE FROM product_provider_log');
         //DB::statement('DELETE FROM product_providers_items');
+
         $this->skipLastMessId = true;
         //$this->splitProviderItems();
 
         $providers = [
+            'iPeople_UA',
             'appteka',
-            /*
             'restarttradein',
             'iCentr_UA',
             'imonolit',
-            'iPeople_UA',
             'MrFixUa',
             'ByryndychokApple',
             'ilovephoneopt',
@@ -62,7 +63,6 @@ class ParserService
             'iDesireKH',
             'optomiphone',
             'wearefriendly',
-            */
         ];
         $providerIds = Provider::where('pid', $providers)->pluck('id')->toArray();
         DB::statement('UPDATE product_providers SET is_active = 0');
@@ -211,6 +211,11 @@ class ParserService
             ->where('title', $product['attributes']['title'])
             ->first();
 
+        //dump($product['attributes']['title']);
+
+
+        if (substr_count($product['attributes']['title'], 'MJLQ2')) {
+        }
 
         if (!$providerItem) {
 
@@ -341,7 +346,7 @@ class ParserService
         }
         */
 
-        $url = "https://tg.i-c-a.su/json/$provider->pid?limit=10";
+        $url = "https://tg.i-c-a.su/json/$provider->pid?limit=100";
         $content = file_get_contents($url);
         $json = json_decode($content, true);
         foreach ($json['messages'] as $item) {
