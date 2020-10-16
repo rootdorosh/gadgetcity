@@ -30,13 +30,16 @@ class Appteka implements IProcessor
 
         // title 1510$ || title 1510 $
         foreach ($lines as $line) {
-            //$line = 'X 256 space silver (A/A-) 495$/470$<br />';
+            $line = 'X 256 space silver (A/A-) 495$/470$<br />';
             $line = strip_tags($line);
-
             $line = trim($line);
 
             if (substr($line, -2) === ' $') {
                 $line = rtrim($line, ' $') . '$';
+            }
+
+            if (substr_count($line, 'X 256 space silver')) {
+                dd($line);
             }
 
             if ($itemsByGradePrice = $this->getSplitGradePrice($line)) {
