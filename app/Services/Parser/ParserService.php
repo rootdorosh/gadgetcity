@@ -127,7 +127,7 @@ class ParserService
         preg_match_all($pattern, $title, $match);
 
         if (!empty($match[1])) {
-            dump($match);
+            //dump($match);
             foreach ($match[1] as $i=>$matchVal) {
                 if ($matchVal === 'mat' && substr_count($title, 'matte')) {
                     $match[1][$i] = 'matte';
