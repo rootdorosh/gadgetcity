@@ -40,7 +40,7 @@ class IPeopleUA implements IProcessor
                 continue;
             }
 
-            if (preg_match('/\s([0-9]{1,10}\$)/', $line, $match)) {
+            if (preg_match('/(\s|\-)([0-9]{1,10}\$)/', $line, $match)) {
                 $price = (int)$match[0];
                 $title = str_replace(' - ' . $match[0], '', $line);
                 $title = trim(str_replace($match[0], '', $title));
@@ -61,6 +61,24 @@ class IPeopleUA implements IProcessor
                 $title = rtrim($line, $match[1]);
                 $title = trim($title);
                 $title = rtrim($title, '-');
+                $title = trim($title);
+
+                $products[] = [
+                    'title' => $title,
+                    'price' => $price,
+                ];
+
+            // iPad Pro 11 WiFi 64Gb - 670 New MDM
+            } elseif (preg_match('/(\-\s)([0-9]{1,10})(\s)/', $line, $match)) {
+
+                $price = (int)$match[2];
+                if ($price > 10000) {
+                    $params['content'] = $line;
+                    ProviderLog::add($params);
+                    continue;
+                }
+
+                $title = rtrim($line, $match[0]);
                 $title = trim($title);
 
                 $products[] = [

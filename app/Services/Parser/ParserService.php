@@ -45,8 +45,8 @@ class ParserService
         //$this->splitProviderItems();
 
         $providers = [
-            'imonolit',
             'iPeople_UA',
+            'imonolit',
             'appteka',
             'restarttradein',
             'iCentr_UA',
