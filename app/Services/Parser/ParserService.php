@@ -169,7 +169,7 @@ class ParserService
 
             if (empty($product['attributes']['title']) ||
                 strlen($product['attributes']['title']) > 190 ||
-                $product['attributes']['price'] > 0
+                $product['attributes']['price'] <= 0
             ) {
                 //$params['content'] = $product['attributes']['title'];
                 //ProviderLog::add($params);
@@ -239,7 +239,7 @@ class ParserService
 
         } else {
 
-            if ($providerItem->status != ProviderItem::STATUS_CANCEL && $providerItem->price_time < $product['price_time']) {
+            if ($providerItem->status != ProviderItem::STATUS_CANCEL && $providerItem->price_time <= $product['price_time']) {
                 $providerItem->price = $product['attributes']['price'];
                 $providerItem->price_time = $product['price_time'];
                 $providerItem->save();

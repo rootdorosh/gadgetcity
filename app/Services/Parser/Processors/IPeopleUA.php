@@ -23,6 +23,7 @@ class IPeopleUA implements IProcessor
         // title 1510$ || title - 1510$
         foreach ($lines as $line) {
             //$line = "MacBook Pro 15' <strong>2015</strong> (MJLQ2) i7/16/256 - 990$ A/A+<br />";
+            //$line = 'SE 32  - 115 <br />';
             $line = str_tg_clean($line);
 
             $stopWords = ['<a href=', 'ipeopleDima', '0962099009'];
@@ -49,6 +50,26 @@ class IPeopleUA implements IProcessor
                     'title' => $title,
                     'price' => $price,
                 ];
+                // iPad Pro 11 WiFi 64Gb - 670
+            } elseif (preg_match('/(\s\-\s)([0-9]{1,10})$/', $line, $match)) {
+                //dump($line);
+                //dump($match);
+                $price = $match[2];
+                if ($price > 10000) {
+                    $params['content'] = $line;
+                    ProviderLog::add($params);
+                    continue;
+                }
+
+                $title = rtrim($line, $match[0]);
+                $title = trim($title);
+
+                $products[] = [
+                    'title' => $title,
+                    'price' => $price,
+                ];
+
+                //dump($products);
             } elseif (preg_match('/(\s|\-)([0-9]{1,10})$/', $line, $match)) {
 
                 $price = (int)$match[1];
