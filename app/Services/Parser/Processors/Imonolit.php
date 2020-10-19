@@ -24,11 +24,10 @@ class Imonolit implements IProcessor
             //$line = 'Apple iPhone 11 Pro 64Gb Space Gray Used Grade A  875';
             //$line = 'Apple MacBook Pro 13\" 256Gb Touch Bar Space Gray (MV962/5V962) 2019  1 310,00<br />';
             //$line = 'Apple iPhone XR 128Gb Blue  695<br />';
+            $line = 'Apple iPhone XR 64Gb Black 615 $';
 
             $line = str_replace('\\"', '"', $line);
-            $line = str_replace(' $<br />', '$<br />', $line);
-            $line = strip_tags($line);
-            $line = trim($line);
+            $line = str_tg_clean($line);
 
             if ($line === '') {
                 continue;
@@ -52,8 +51,21 @@ class Imonolit implements IProcessor
                         'price' => $match[1],
                     ];
                 }
+            // Apple iPhone XR 64Gb Black 615 $
+            } else if (preg_match('/([0-9]{1,10})\s\$/', $line, $match)) {
 
-                //dd($match);
+                $title = str_replace($match[0], '', $line);
+                if ($groupTitle) {
+                    $title  = $groupTitle . ' ' . $title;
+                }
+
+                $title = trim($title);
+                if ($title !== '') {
+                    $products[] = [
+                        'title' => $title,
+                        'price' => $match[1],
+                    ];
+                }
             // title 1 190,00 USD
             } else if (preg_match('/([0-9]{1,2}\s[0-9]{1,10}\,00\sUSD)/', $line, $match)) {
                 $title = str_replace($match[0], '', $line);

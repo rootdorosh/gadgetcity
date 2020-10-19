@@ -23,7 +23,7 @@ class IPeopleUA implements IProcessor
         // title 1510$ || title - 1510$
         foreach ($lines as $line) {
             //$line = "MacBook Pro 15' <strong>2015</strong> (MJLQ2) i7/16/256 - 990$ A/A+<br />";
-            $line = strip_tags($line);
+            $line = str_tg_clean($line);
 
             $stopWords = ['<a href=', 'ipeopleDima', '0962099009'];
             $hasStopWord = false;
@@ -49,7 +49,7 @@ class IPeopleUA implements IProcessor
                     'title' => $title,
                     'price' => $price,
                 ];
-            } elseif (preg_match('/\s([0-9]{1,10})$/', $line, $match)) {
+            } elseif (preg_match('/(\s|\-)([0-9]{1,10})$/', $line, $match)) {
 
                 $price = (int)$match[1];
                 if ($price > 10000) {

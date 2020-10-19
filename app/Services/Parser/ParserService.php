@@ -6,13 +6,7 @@ namespace App\Services\Parser;
 use App\Modules\Color\Models\Color;
 use Illuminate\Support\Str;
 use App\Services\Curl;
-use App\Modules\Product\Models\{
-    Product,
-    Price,
-    Provider,
-    ProviderItem,
-    ProductProviderPrice
-};
+use App\Modules\Product\Models\{Product, Price, Provider, ProviderItem, ProductProviderPrice, ProviderLog};
 use App\Services\Parser\Processors\IProcessor;
 use DB;
 
@@ -44,18 +38,18 @@ class ParserService
         }
         */
 
-        //DB::statement('DELETE FROM product_provider_log');
+        DB::statement('DELETE FROM product_provider_log');
         //DB::statement('DELETE FROM product_providers_items');
 
         $this->skipLastMessId = true;
         //$this->splitProviderItems();
 
         $providers = [
+            'imonolit',
             'iPeople_UA',
             'appteka',
             'restarttradein',
             'iCentr_UA',
-            'imonolit',
             'MrFixUa',
             'ByryndychokApple',
             'ilovephoneopt',
@@ -173,7 +167,12 @@ class ParserService
 
         foreach ($products as $product) {
 
-            if (empty($product['attributes']['title']) || strlen($product['attributes']['title']) > 190) {
+            if (empty($product['attributes']['title']) ||
+                strlen($product['attributes']['title']) > 190 ||
+                $product['attributes']['price'] > 0
+            ) {
+                //$params['content'] = $product['attributes']['title'];
+                //ProviderLog::add($params);
                 continue;
             }
             // split product title by colors: iPhone XS Max 64GB Space/Gold/Red
