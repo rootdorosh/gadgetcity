@@ -19,7 +19,7 @@ class ProviderSeeder extends Seeder
             $title = trim($title);
             $pid = trim($pid);
             $is_active = 1;
-            $provider = Provider::updateOrCreate(['pid' => $pid], compact('pid', 'title', 'is_active'));
+            $provider = Provider::firstOrCreate(['pid' => $pid], compact('pid', 'title', 'is_active'));
             echo $provider->id . "\n";
         }
     }

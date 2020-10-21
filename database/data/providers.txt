@@ -14,3 +14,8 @@ iFranko|iFranko_if
 Byryndychok|ByryndychokApple
 iOpt|ioptua
 Монолит|imonolit
+Apple Life|apple_center_ua
+SBS|SBS_Lviv
+iOpt|ioptua
+iCoola|icoolaopt
+Apple room|swipe_ua

@@ -45,6 +45,10 @@ class ParserService
         //$this->splitProviderItems();
 
         $providers = [
+            'icoolaopt',
+            'ioptua',
+            'SBS_Lviv',
+            'apple_center_ua',
             'iPeople_UA',
             'imonolit',
             'appteka',
@@ -58,6 +62,7 @@ class ParserService
             'optomiphone',
             'wearefriendly',
         ];
+
         $providerIds = Provider::where('pid', $providers)->pluck('id')->toArray();
         DB::statement('UPDATE product_providers SET is_active = 0');
         foreach ($providers as $pid) {
@@ -283,6 +288,10 @@ class ParserService
             'restarttradein' => 'RestartTradeIn',
             'MrFixUa' => 'MrFixUa',
             'ByryndychokApple' => 'ByryndychokApple',
+            'apple_center_ua' => 'AppleCenterUa',
+            'SBS_Lviv' => 'SBSLviv',
+            'ioptua' => 'IoptUa',
+            'icoolaopt' => 'IcoolaOpt',
         ];
         $clsProcessor = isset($mapProcessors[$provider->pid]) ?
             "App\Services\Parser\Processors\\" . $mapProcessors[$provider->pid]

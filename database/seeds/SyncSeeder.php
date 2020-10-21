@@ -19,6 +19,7 @@ class SyncSeeder extends Seeder
        $this->call(RolesTableSeeder::class);
        $this->call(UsersTableSeeder::class);
        $this->call(ConnectRelationshipsSeeder::class);
-       
+       $this->call(ProviderSeeder::class);
+
     }
 }
