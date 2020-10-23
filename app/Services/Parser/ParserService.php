@@ -45,6 +45,7 @@ class ParserService
         //$this->splitProviderItems();
 
         $providers = [
+            'swipe_ua',
             'icoolaopt',
             'ioptua',
             'SBS_Lviv',
@@ -292,6 +293,7 @@ class ParserService
             'SBS_Lviv' => 'SBSLviv',
             'ioptua' => 'IoptUa',
             'icoolaopt' => 'IcoolaOpt',
+            'swipe_ua' => 'SwipeUa',
         ];
         $clsProcessor = isset($mapProcessors[$provider->pid]) ?
             "App\Services\Parser\Processors\\" . $mapProcessors[$provider->pid]

@@ -4,6 +4,7 @@ declare( strict_types = 1 );
 
 namespace App\Modules\Product\Models;
 
+use App\Services\Parser\ParserService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -48,6 +49,21 @@ class ProviderLog extends Model
      */
     public static function add(array $attributes):? self
     {
+        $line = str_tg_clean($attributes['content']);
+        if (preg_match('/(([0-9]{1,5})(gb))/', $line, $match)) {
+            echo $line;
+
+            $provider = Provider::find($attributes['provider_id']);
+            (new ParserService)->parseProviderItem($provider, [
+                'attributes' => [
+                    'price' => 0,
+                    'title' => str_tg_clean($attributes['content']),
+                ],
+                'price_time' => $attributes['message_time'],
+            ]);
+            return null;
+        }
+
         $data = $attributes;
         $data['create_time'] = time();
 
