@@ -63,7 +63,7 @@ class ProviderLog extends Model
             ]);
             return null;
         } elseif (preg_match('/(\s[0-9]{2,5}\s)/', $line, $match)) {
-            if (isset($match[1]) && in_array(trim($match[1]), ['16', '32', '128', '256', '512', '1024', '2048', '4096'])) {
+            if (isset($match[1]) && in_array(trim($match[1]), ['16', '32', '64', '128', '256', '512', '1024', '2048', '4096'])) {
                 $provider = Provider::find($attributes['provider_id']);
                 if (in_array($provider->pid, ['swipe_ua', 'ioptua'])) {
                     (new ParserService)->parseProviderItem($provider, [
