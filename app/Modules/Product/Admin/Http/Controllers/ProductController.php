@@ -5,6 +5,7 @@ namespace App\Modules\Product\Admin\Http\Controllers;
 use App\Base\AdminController;
 use App\Modules\Product\Models\ProductProviderPrice;
 use App\Modules\Product\Models\Provider;
+use App\Modules\Product\Models\ProviderItem;
 use App\Modules\Product\Services\Crud\ProductCrudService;
 use App\Modules\Product\Models\Product;
 use Illuminate\Support\Arr;
@@ -23,6 +24,7 @@ use App\Modules\Product\Admin\Http\Requests\Product\{
 };
 use Illuminate\Support\Str;
 use DB;
+use Setting;
 
 /**
  */
@@ -242,11 +244,17 @@ class ProductController extends AdminController
             $qtyNode->appendChild($xml->createTextNode($product['availability']));
 
             foreach ($providers as $providerId => $providerPid) {
+                $lastItem = ProviderItem::where('provider_id', $providerId)->orderBy('price_time', 'DESC')->first();
+
                 $price = null;
                 if (!empty($product['provider_' . $providerId])) {
                     $prices = $product['provider_' . $providerId];
                     usort($prices, function ($a, $b) {  return $a['price_time'] <= $b['price_time'] ? 1 : -1; });
                     $price = '$' . $prices[0]['price'];
+
+                    if ($lastItem && Setting::get('report_xml_date')) {
+                        $price .= ' ('. date('d.m.y', $lastItem->price_time) .')';
+                    }
                 }
                 $providerNode = $xml->createElement($providerPid);
                 $item->appendChild($providerNode);

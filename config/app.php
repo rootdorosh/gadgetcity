@@ -180,6 +180,9 @@ return [
         App\Providers\BladeServiceProvider::class,
         App\Services\Form\ServiceProvider::class,
         App\Services\FrontPage\ServiceProvider::class,
+
+        App\Modules\Settings\Container\SettingServiceProvider::class,
+
     ],
 
     /*
@@ -233,6 +236,8 @@ return [
         'Form' => App\Services\Form\Form::class,
         'FormBuilder' => App\Services\Form\Facade::class,
         'FrontPage' => App\Services\FrontPage\Facade::class,
+        'Setting' => App\Modules\Settings\Container\SettingFacade::class,
+
     ],
 
 ];

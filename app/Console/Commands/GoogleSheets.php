@@ -4,7 +4,9 @@ namespace App\Console\Commands;
 
 use App\Modules\Product\Models\Product;
 use App\Modules\Product\Models\Provider;
+use App\Modules\Product\Models\ProviderItem;
 use Illuminate\Console\Command;
+use Setting;
 
 class GoogleSheets extends Command
 {
@@ -69,7 +71,13 @@ class GoogleSheets extends Command
         $providers = Provider::where('is_active', '1')->get()->pluck('pid', 'id')->toArray();
         $headers = ['Product', 'Stock', 'qty'];
         foreach ($providers as $providerId => $providerPid) {
-            $headers[] = $providerPid;
+            $lastItem = ProviderItem::where('provider_id', $providerId)->orderBy('price_time', 'DESC')->first();
+            $providerTitle = $providerPid;
+            if ($lastItem && Setting::get('report_google_date')) {
+                $providerTitle .= ' ('. date('d.m.y', $lastItem->price_time) .')';
+            }
+
+            $headers[] = $providerTitle;
         }
 
         $values = [$headers];
