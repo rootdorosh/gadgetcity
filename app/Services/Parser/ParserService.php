@@ -66,10 +66,11 @@ class ParserService
 
         DB::statement('UPDATE product_providers SET is_active = 0');
         foreach (Provider::whereIn('pid', $providers)->get() as $provider) {
-            echo $provider->id . "\n";
             $provider->is_active = 1;
             $provider->save();
+        }
 
+        foreach (Provider::whereIn('pid', $providers)->get() as $provider) {
             $this->parseProvider($provider);
             echo $provider->pid . "\n";
             sleep(30);
