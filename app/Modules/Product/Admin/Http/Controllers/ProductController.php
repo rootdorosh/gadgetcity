@@ -253,7 +253,7 @@ class ProductController extends AdminController
                     $price = '$' . $prices[0]['price'];
 
                     if ($lastItem && Setting::get('report_xml_date')) {
-                        $price .= ' ('. date('d.m.y', $lastItem->price_time) .')';
+                        $price .= ' ('. date('d.m.Y', $lastItem->price_time) .')';
                     }
                 }
                 $providerNode = $xml->createElement($providerPid);

@@ -74,7 +74,7 @@ class GoogleSheets extends Command
             $lastItem = ProviderItem::where('provider_id', $providerId)->orderBy('price_time', 'DESC')->first();
             $providerTitle = $providerPid;
             if ($lastItem && Setting::get('report_google_date')) {
-                $providerTitle .= ' ('. date('d.m.y', $lastItem->price_time) .')';
+                $providerTitle .= ' ('. date('d.m.Y', $lastItem->price_time) .')';
             }
 
             $headers[] = $providerTitle;
