@@ -64,15 +64,15 @@ class ParserService
             'wearefriendly',
         ];
 
-        $providerIds = Provider::where('pid', $providers)->pluck('id')->toArray();
         DB::statement('UPDATE product_providers SET is_active = 0');
-        foreach ($providers as $pid) {
-            $provider = Provider::where('pid', $pid)->first();
+        foreach (Provider::whereIn('pid', $providers)->get() as $provider) {
+            echo $provider->id . "\n";
             $provider->is_active = 1;
             $provider->save();
 
             $this->parseProvider($provider);
             echo $provider->pid . "\n";
+            sleep(30);
         }
     }
 
