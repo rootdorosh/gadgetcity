@@ -358,8 +358,12 @@ class ParserService
         */
 
         $url = "https://tg.i-c-a.su/json/$provider->pid?limit=100";
-        $content = Curl::getPage($url);
-        //$content = file_get_contents($url);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $content = curl_exec($ch);
+        curl_close($ch);
+
         $json = json_decode($content, true);
         foreach ($json['messages'] as $item) {
             array_unshift($data, [
