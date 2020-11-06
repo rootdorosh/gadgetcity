@@ -100,16 +100,11 @@ class Curl
 
     public static function getProxies()
     {
-        $content = "45.130.126.113:8000:ngfYgu:ELMREh
-45.130.126.14:8000:ngfYgu:ELMREh
-45.154.59.208:8000:ngfYgu:ELMREh
-45.130.126.73:8000:ngfYgu:ELMREh
-45.130.126.200:8000:ngfYgu:ELMREh
-192.166.81.92:8000:ngfYgu:ELMREh
-45.154.59.193:8000:ngfYgu:ELMREh
-192.166.81.127:8000:ngfYgu:ELMREh
-193.8.234.168:8000:ngfYgu:ELMREh
-45.130.126.35:8000:ngfYgu:ELMREh";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://bulbsize.com/proxies.txt');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $content = curl_exec($ch);
+        curl_close($ch);
 
         $list = explode("\n", $content);
         $list = array_map(function($val) { return trim($val); }, $list);
