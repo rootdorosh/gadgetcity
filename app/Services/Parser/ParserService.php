@@ -340,23 +340,27 @@ class ParserService
     {
         $data = [];
 
-        $lastId = max(0,  $provider->last_guid - 10);
+        //$lastId = max(0,  $provider->last_guid - 10);
+
+        $url = "http://88.198.157.69:9000/new/index.php?channel=$provider->pid";
 
         /*
-        $url = "http://88.198.157.69:9000/index.php?channel=$provider->pid";
         if (!empty($provider->last_guid) && !$this->skipLastMessId) {
             $url.= '&min_id=' . $lastId;
         }
+        */
+
         $xml = simplexml_load_string(Curl::getPage($url));
-        foreach ($json->messages->message as $item) {
+        foreach ($xml->messages->message as $item) {
             array_unshift($data, [
                 'content' => (string) $item->content,
                 'guid' => (int) $item->id,
                 'price_time' => (int) $item->time,
+                'date' => date('Y-m-d', (int)$item->time),
             ]);
         }
-        */
 
+        /*
         $url = "https://tg.i-c-a.su/json/$provider->pid?limit=100";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -373,6 +377,7 @@ class ParserService
                 'date' => date('Y-m-d', $item['date']),
             ]);
         }
+        */
 
         if (count($data)) {
             $provider->last_guid = end($data)['guid'];
