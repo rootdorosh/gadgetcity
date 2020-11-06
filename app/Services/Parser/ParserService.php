@@ -351,13 +351,18 @@ class ParserService
         */
 
         $xml = simplexml_load_string(Curl::getPage($url));
-        foreach ($xml->messages->message as $item) {
-            array_unshift($data, [
-                'content' => (string) $item->content,
-                'guid' => (int) $item->id,
-                'price_time' => (int) $item->time,
-                'date' => date('Y-m-d', (int)$item->time),
-            ]);
+
+        try {
+            foreach ($xml->messages->message as $item) {
+                array_unshift($data, [
+                    'content' => (string) $item->content,
+                    'guid' => (int) $item->id,
+                    'price_time' => (int) $item->time,
+                    'date' => date('Y-m-d', (int)$item->time),
+                ]);
+            }
+        } catch (\Exception $e) {
+            dump($e->getMessage());
         }
 
         /*
