@@ -355,7 +355,8 @@ class ParserService
         }
         */
 
-        $xml = simplexml_load_string(Curl::getPage($url));
+        $content = Curl::getPage($url);
+        $xml = simplexml_load_string($content);
 
         try {
             foreach ($xml->messages->message as $item) {
@@ -368,6 +369,7 @@ class ParserService
             }
         } catch (\Exception $e) {
             dump($e->getMessage());
+            echo $content;
         }
 
         /*
