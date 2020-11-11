@@ -73,7 +73,6 @@ class ParserService
         foreach (Provider::whereIn('pid', $providers)->get() as $provider) {
             $this->parseProvider($provider);
             echo $provider->pid . "\n";
-            sleep(30);
         }
     }
 
