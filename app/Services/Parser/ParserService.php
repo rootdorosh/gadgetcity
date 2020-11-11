@@ -45,13 +45,13 @@ class ParserService
         //$this->splitProviderItems();
 
         $providers = [
+            'imonolit',
             'swipe_ua',
             'icoolaopt',
             'ioptua',
             'SBS_Lviv',
             'apple_center_ua',
             'iPeople_UA',
-            'imonolit',
             'appteka',
             'restarttradein',
             'iCentr_UA',
