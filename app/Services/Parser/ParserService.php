@@ -66,7 +66,7 @@ class ParserService
 
         DB::statement('UPDATE product_providers SET is_active = 0');
         foreach ($providers as $providerPid) {
-            $provider = Provider::whereIn('pid', $providerPid)->first();
+            $provider = Provider::where('pid', $providerPid)->first();
             if ($provider) {
                 $provider->is_active = 1;
                 $provider->save();
@@ -74,7 +74,7 @@ class ParserService
         }
 
         foreach ($providers as $providerPid) {
-            $provider = Provider::whereIn('pid', $providerPid)->first();
+            $provider = Provider::where('pid', $providerPid)->first();
             if ($provider) {
                 $this->parseProvider($provider);
                 echo $provider->pid . "\n";
