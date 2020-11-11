@@ -278,9 +278,9 @@ class ParserService
     {
         $products = [];
         $mapProcessors = [
+            'imonolit' => 'Imonolit',
             'appteka' => 'Appteka',
             'applezt' => 'Applezt',
-            'imonolit' => 'Imonolit',
             'iCentr_UA' => 'ICentrUA',
             'wearefriendly' => 'WeareFriendly',
             'optomiphone' => 'OptomIPhone',
