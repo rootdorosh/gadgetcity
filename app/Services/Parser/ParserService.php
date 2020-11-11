@@ -368,8 +368,8 @@ class ParserService
                 ]);
             }
         } catch (\Exception $e) {
+            dump($content);
             dump($e->getMessage());
-            echo $content;
         }
 
         /*
