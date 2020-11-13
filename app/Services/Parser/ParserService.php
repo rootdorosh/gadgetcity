@@ -46,6 +46,7 @@ class ParserService
 
         $providers = [
             'imonolit',
+            /*
             'swipe_ua',
             'icoolaopt',
             'ioptua',
@@ -62,6 +63,7 @@ class ParserService
             'iDesireKH',
             'wearefriendly',
             'optomiphone',
+            */
         ];
 
         DB::statement('UPDATE product_providers SET is_active = 0');

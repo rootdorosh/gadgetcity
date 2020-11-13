@@ -25,6 +25,8 @@ class Imonolit implements IProcessor
             //$line = 'Apple MacBook Pro 13\" 256Gb Touch Bar Space Gray (MV962/5V962) 2019  1 310,00<br />';
             //$line = 'Apple iPhone XR 128Gb Blue  695<br />';
             //$line = 'Apple iPhone XR 64Gb Black 615 $';
+            //$line = 'Apple iPhone X 64Gb Silver Used Grade A $445';
+            //$line = 'Apple iPhone 12 128GB Blue New HSO*   950,00';
 
             $line = str_replace('\\"', '"', $line);
             $line = str_tg_clean($line);
@@ -39,6 +41,8 @@ class Imonolit implements IProcessor
 
             // title 850$
             } else if (preg_match('/([0-9]{1,10})\$/', $line, $match)) {
+                dump('match 850$');
+
                 $title = str_replace($match[0], '', $line);
                 if ($groupTitle) {
                     $title  = $groupTitle . ' ' . $title;
@@ -53,6 +57,23 @@ class Imonolit implements IProcessor
                 }
             // Apple iPhone XR 64Gb Black 615 $
             } else if (preg_match('/([0-9]{1,10})\s\$/', $line, $match)) {
+                dump('match 850 $');
+
+                $title = str_replace($match[0], '', $line);
+                if ($groupTitle) {
+                    $title  = $groupTitle . ' ' . $title;
+                }
+
+                $title = trim($title);
+                if ($title !== '') {
+                    $products[] = [
+                        'title' => $title,
+                        'price' => $match[1],
+                    ];
+                }
+            // Apple iPhone X 64Gb Silver Used Grade A $445
+            } else if (preg_match('/\s\$([0-9]{1,10})/', $line, $match)) {
+                dump('match $850');
 
                 $title = str_replace($match[0], '', $line);
                 if ($groupTitle) {
@@ -68,6 +89,8 @@ class Imonolit implements IProcessor
                 }
             // title 1 190,00 USD
             } else if (preg_match('/([0-9]{1,2}\s[0-9]{1,10}\,00\sUSD)/', $line, $match)) {
+                dump('match 1 850,00 USD');
+
                 $title = str_replace($match[0], '', $line);
                 $title = trim($title);
 
@@ -82,6 +105,8 @@ class Imonolit implements IProcessor
                 }
             // title  1 400,00
             } else if (preg_match('/([0-9]{1,2}\s[0-9]{1,10}\,00)/', $line, $match)) {
+                dump('match 1 850,00');
+
                 $title = str_replace($match[0], '', $line);
                 $title = trim($title);
 
@@ -96,6 +121,8 @@ class Imonolit implements IProcessor
                 }
             // title 190,00 USD
             } else if (preg_match('/([0-9]{1,10}\,00\sUSD)/', $line, $match)) {
+                dump('match 850,00 USD');
+
                 $title = str_replace($match[0], '', $line);
                 $title = trim($title);
 
@@ -113,7 +140,10 @@ class Imonolit implements IProcessor
                 !substr_count($line, '$')
             ) {
                 $parts = explode(' ', $line);
+                $fonded = false;
                 if (count($parts) > 1 && is_numeric(end($parts))) {
+                    dump('match 850');
+
                     $price = end($parts);
                     unset($parts[count($parts)-1]);
                     $title = implode(' ', $parts);
@@ -123,7 +153,37 @@ class Imonolit implements IProcessor
                         'title' => $title,
                         'price' => $price,
                     ];
-                    //dd($products);
+                    $fonded = true;
+                } else {
+                    // Apple iPhone X 64Gb Silver Used Grade A 950,00
+                    if (preg_match('/\s([0-9]{1,10})\,([0-9]{2})/', $line, $match)) {
+                        dump('match 850,00');
+
+                        $title = str_replace($match[0], '', $line);
+                        if ($groupTitle) {
+                            $title = $groupTitle . ' ' . $title;
+                        }
+
+                        $title = trim($title);
+                        if ($title !== '') {
+                            $products[] = [
+                                'title' => $title,
+                                'price' => $match[1],
+                            ];
+                            $fonded = true;
+                        }
+                    } elseif (preg_match('/([0-9]{3,10})$/', $line, $match)) {
+                        $title = str_replace($match[0], '', $line);
+                        $products[] = [
+                            'title' => $title,
+                            'price' => $match[1],
+                        ];
+                        $fonded = true;
+                    }
+                }
+                if (!$fonded) {
+                    $params['content'] = $line;
+                    ProviderLog::add($params);
                 }
             } else {
                 $params['content'] = $line;
