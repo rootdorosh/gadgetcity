@@ -147,6 +147,11 @@ function str_tg_clean($string) {
 
     $regex_dingbats = '/[\x{2700}-\x{27BF}]/u';
     $clear_string = preg_replace($regex_dingbats, '', $clear_string);
+    $clear_string = trim($clear_string);
+    $clear_string = str_replace("    $", " $", $clear_string);
+    $clear_string = str_replace("   $", " $", $clear_string);
+    $clear_string = str_replace("  $", " $", $clear_string);
+    $clear_string = str_replace(" $", " $", $clear_string);
 
-    return trim($clear_string);
+    return $clear_string;
 }
