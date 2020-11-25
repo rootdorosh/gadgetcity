@@ -4,6 +4,7 @@ declare( strict_types = 1 );
 namespace App\Services\Parser;
 
 use App\Modules\Color\Models\Color;
+use App\Modules\Pattern\Models\Pattern;
 use Illuminate\Support\Str;
 use App\Services\Curl;
 use App\Modules\Product\Models\{Product, Price, Provider, ProviderItem, ProductProviderPrice, ProviderLog};
@@ -79,6 +80,59 @@ class ParserService
                 $this->parseProvider($provider);
                 echo $provider->pid . "\n";
             }
+        }
+
+        $this->applyCustomTemplates();
+    }
+
+    public function applyCustomTemplates()
+    {
+        $patterns = Pattern::orderBy('rank')->get();
+
+        $idsToRemove = [];
+        $data = [];
+        ProviderLog::chunk(100, function($providerLogs) use ($patterns, & $data, & $idsToRemove) {
+            foreach ($providerLogs as $providerLog) {
+                $hasMatch = false;
+                foreach ($patterns as $pattern) {
+                    if ($hasMatch) {
+                        continue;
+                    }
+                    preg_match($pattern->value, $providerLog->content, $match);
+
+                    if (!empty($match)) {
+                        $hasMatch = true;
+                        $idsToRemove[] = $providerLog->id;
+
+                        //dump($providerLog->content);
+                        //dd($match);
+
+                        $data[$providerLog->provider_id][] = [
+                            //'pattern' => $pattern->value,
+                            //'match' => $match,
+                            //'origin' => $providerLog->content,
+                            'price_time' => $providerLog->message_time,
+                            'provider_id' => $providerLog->provider_id,
+                            'attributes' => [
+                                'price' => isset($match[2]) ? $match[2] : $match[1],
+                                'title' => str_replace($match[0], '', $providerLog->content),
+                            ],
+
+                        ];
+                    }
+                }
+            }
+        });
+
+        foreach ($data as $providerId => $products) {
+            $provider = Provider::find($providerId);
+            echo $provider->title . "\n";
+            print_r($products);
+            $this->saveProviderProducts($provider, $products);
+        }
+
+        if (!empty($idsToRemove)) {
+            ProviderLog::destroy($idsToRemove);
         }
     }
 
@@ -177,6 +231,15 @@ class ParserService
 
         $products = $this->getProducts($provider, $posts);
 
+        $this->saveProviderProducts($provider, $products);
+    }
+
+    /**
+     * @param Provider $provider
+     * @param array $products
+     */
+    public function saveProviderProducts(Provider $provider, array $products)
+    {
         foreach ($products as $product) {
 
             if (empty($product['attributes']['title']) ||
@@ -198,14 +261,14 @@ class ParserService
                         "attributes" => [
                             "title" => $productColorTitle,
                             "price" => $product['attributes']['price'],
-                          ],
-                          "provider_id" => $product['provider_id'],
-                          "price_time" => $product['price_time'],
+                        ],
+                        "provider_id" => $product['provider_id'],
+                        "price_time" => $product['price_time'],
                     ]);
                 }
             }
 
-       }
+        }
     }
 
     /**

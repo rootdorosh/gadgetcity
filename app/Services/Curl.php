@@ -55,17 +55,9 @@ class Curl
         $userAgents = self::getUserAgents();
         $userAgent = $userAgents[array_rand($userAgents)];
 
-        $proxies = self::getProxies();
-        $proxy_row = $proxies[array_rand($proxies)];
-
-        list($proxy_ip, $proxy_port, $proxy_user, $proxy_pass) = explode(':', $proxy_row);
-
         $ch = curl_init();
 
         curl_setopt_array($ch, [
-            CURLOPT_PROXY => "$proxy_ip:$proxy_port",
-            CURLOPT_PROXYTYPE => CURLPROXY_SOCKS5,
-            CURLOPT_PROXYUSERPWD => "$proxy_user:$proxy_pass",
             CURLOPT_USERAGENT => $userAgent,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HEADER => false,
