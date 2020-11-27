@@ -17,6 +17,7 @@ return [
         'example' => 'Пример',
         'value' => 'Шаблон',
         'rank' => 'Порядок применения',
+        'pattern' => 'Pattern',
         'result' => 'Результат',
     ],
 ];

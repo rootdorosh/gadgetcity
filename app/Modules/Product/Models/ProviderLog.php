@@ -43,6 +43,16 @@ class ProviderLog extends Model
         return $this->belongsTo('App\Modules\Product\Models\Provider');
     }
 
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function (self $model) {
+            $model->content = str_tg_clean($model->content);
+        });
+    }
+
     /**
      * @param array $attributes
      * @return static|null

@@ -94,11 +94,12 @@ class IndexFilter extends BaseFilter
      */
     public function getData()
     {
-        return $this->resolveData(function($row) {
+        return $this->resolveData(function(Pattern $row) {
             return [
                 'id' => $row->id,
                 'example' => $row->example,
                 'value' => $row->value,
+                'pattern' => $row->pattern,
                 'rank' => $row->rank,
                 'result' => '<pre>' . $this->getResult($row) . '</pre>',
             ];
@@ -112,8 +113,17 @@ class IndexFilter extends BaseFilter
     public function getResult(Pattern $pattern): string
     {
         try {
-            preg_match($pattern->value, $pattern->example, $match);
-            return var_export($match, true);
+            preg_match($pattern->pattern, $pattern->example, $match);
+            $match = array_unique($match);
+            $match = array_values($match);
+            $match = array_filter($match, function ($value) {
+                return !empty($value);
+            });
+
+            //$result = "<b style=' white-space: nowrap;overflow: hidden;'>".$pattern->pattern."</b><br/>";
+            $result =  var_export($match, true);
+
+            return $result;
         } catch (\Exception $e) {
             return $e->getMessage();
         }

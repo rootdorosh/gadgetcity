@@ -5,6 +5,8 @@ declare( strict_types = 1 );
 namespace App\Modules\Pattern\Admin\Http\Requests\Pattern;
 
 use App\Base\Requests\BaseFormRequest;
+use App\Modules\Pattern\Models\Pattern;
+use Illuminate\Validation\Rule;
 
 /**
  * Class FormRequest
@@ -29,14 +31,26 @@ class FormRequest extends BaseFormRequest
      */
     public function rules(): array
     {
+        $pattern = $this->pattern;
+
         $rules = [
             'example' => [
                 'required',
                 'string',
+                Rule::unique('pattern')->where(function ($query) use ($pattern) {
+                    if ($pattern && !empty($pattern->id)) {
+                        $query->where('id', '<>', $pattern->id);
+                    }
+                }),
             ],
             'value' => [
                 'required',
                 'string',
+                Rule::unique('pattern')->where(function ($query) use ($pattern) {
+                    if ($pattern && !empty($pattern->id)) {
+                        $query->where('id', '<>', $pattern->id);
+                    }
+                }),
             ],
             'rank' => [
                 'required',
@@ -62,14 +76,15 @@ class FormRequest extends BaseFormRequest
     {
         $validator->after(function ($validator) {
             if (!empty($this->example) && !empty($this->value)) {
+                $pattern = Pattern::convertToPattern($this->value);
 
                 try {
-                    if (!preg_match($this->value, $this->example, $match)) {
-                        $validator->errors()->add('value', 'Нет совпадения');
+                    if (!preg_match($pattern, $this->example, $match)) {
+                        $validator->errors()->add('value', 'Нет совпадения: ' . $pattern);
                     }
 
                 } catch (\Exception $e) {
-                    $validator->errors()->add('value', $e->getMessage());
+                    $validator->errors()->add('value', $e->getMessage() . ': ' . $pattern);
                 }
             }
         });

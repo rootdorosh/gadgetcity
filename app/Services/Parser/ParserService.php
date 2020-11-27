@@ -98,27 +98,43 @@ class ParserService
                     if ($hasMatch) {
                         continue;
                     }
-                    preg_match($pattern->value, $providerLog->content, $match);
+                    preg_match($pattern->pattern, $providerLog->content, $match);
 
                     if (!empty($match)) {
-                        $hasMatch = true;
-                        $idsToRemove[] = $providerLog->id;
+                        $match = array_unique($match);
+                        $match = array_values($match);
+                        $match = array_filter($match, function ($value) {
+                            return !empty($value);
+                        });
 
-                        //dump($providerLog->content);
-                        //dd($match);
+                        $match = array_map(function ($value) {
+                            $value = str_replace([' ', '.00', ',00'], '', $value);
+                            return $value;
 
-                        $data[$providerLog->provider_id][] = [
-                            //'pattern' => $pattern->value,
-                            //'match' => $match,
-                            //'origin' => $providerLog->content,
-                            'price_time' => $providerLog->message_time,
-                            'provider_id' => $providerLog->provider_id,
-                            'attributes' => [
-                                'price' => isset($match[2]) ? $match[2] : $match[1],
-                                'title' => str_replace($match[0], '', $providerLog->content),
-                            ],
+                        }, $match);
+                        $prices = array_filter($match, function ($value) {
+                            return is_numeric($value);
+                        });
+                        $price = min($prices);
 
-                        ];
+                        if ($price) {
+
+                            $hasMatch = true;
+                            $idsToRemove[] = $providerLog->id;
+
+                            $data[$providerLog->provider_id][] = [
+                                //'pattern' => $pattern->value,
+                                //'match' => $match,
+                                //'origin' => $providerLog->content,
+                                'price_time' => $providerLog->message_time,
+                                'provider_id' => $providerLog->provider_id,
+                                'attributes' => [
+                                    'price' => isset($match[2]) ? $match[2] : $match[1],
+                                    'title' => str_replace($match[0], '', $providerLog->content),
+                                ],
+
+                            ];
+                        }
                     }
                 }
             }
@@ -127,7 +143,6 @@ class ParserService
         foreach ($data as $providerId => $products) {
             $provider = Provider::find($providerId);
             echo $provider->title . "\n";
-            print_r($products);
             $this->saveProviderProducts($provider, $products);
         }
 

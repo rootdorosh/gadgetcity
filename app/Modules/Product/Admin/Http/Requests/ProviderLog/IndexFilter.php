@@ -93,7 +93,7 @@ class IndexFilter extends BaseFilter
      */
     public function getData()
     {
-        return $this->resolveData(function($row) {
+        return $this->resolveData(function(ProviderLog $row) {
             return [
                 'id' => $row->id,
                 'provider_id' => $row->provider_title,
