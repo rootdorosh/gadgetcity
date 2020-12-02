@@ -24,7 +24,6 @@ class IPeopleUA implements IProcessor
         foreach ($lines as $line) {
             //$line = "MacBook Pro 15' <strong>2015</strong> (MJLQ2) i7/16/256 - 990$ A/A+<br />";
             //$line = 'SE 32  - 115 <br />';
-            //$line = 'XR 64  - 430';
             $line = str_tg_clean($line);
 
             $stopWords = ['<a href=', 'ipeopleDima', '0962099009'];
@@ -62,7 +61,7 @@ class IPeopleUA implements IProcessor
                     continue;
                 }
 
-                $title = rtrim($line, $match[0]);
+                $title = str_replace($match[0], '', $line);
                 $title = trim($title);
 
                 $products[] = [
@@ -80,9 +79,9 @@ class IPeopleUA implements IProcessor
                     continue;
                 }
 
-                $title = rtrim($line, $match[1]);
+                $title = str_replace($match[0], '', $line);
                 $title = trim($title);
-                $title = rtrim($title, '-');
+                $title = str_lreplace('-', '', $title);
                 $title = trim($title);
 
                 $products[] = [
@@ -100,7 +99,7 @@ class IPeopleUA implements IProcessor
                     continue;
                 }
 
-                $title = rtrim($line, $match[0]);
+                $title = str_replace($match[0], '', $line);
                 $title = trim($title);
 
                 $products[] = [
@@ -112,6 +111,8 @@ class IPeopleUA implements IProcessor
                 ProviderLog::add($params);
             }
         }
+
+        //dd($products);
 
         return $products;
     }
