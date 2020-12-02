@@ -14,7 +14,7 @@ class SeedPattern extends Migration
     public function up()
     {
         \Illuminate\Support\Facades\DB::statement("DELETE FROM pattern");
-        
+
         $sql = "INSERT INTO `pattern` (`id`, `example`, `value`, `rank`) VALUES
 (16, '7 Plus 32 - 2 800.00$', '[space]-[space][price]$', 1),
 (17, '12 64 GB - 1300 $', '([space]-[space][price][space]$)', 2),
