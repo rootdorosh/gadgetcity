@@ -27,6 +27,7 @@ class Imonolit implements IProcessor
             //$line = 'Apple iPhone XR 64Gb Black 615 $';
             //$line = 'Apple iPhone X 64Gb Silver Used Grade A $445';
             //$line = 'Apple iPhone 12 128GB Blue New HSO*   950,00';
+            //$line = 'Apple iPhone 8 64Gb Gold Used Grade A ..250,00 $';
 
             $line = str_replace('\\"', '"', $line);
             $line = str_tg_clean($line);
@@ -71,6 +72,7 @@ class Imonolit implements IProcessor
                         'price' => $match[1],
                     ];
                 }
+                //dd($products);
             // Apple iPhone X 64Gb Silver Used Grade A $445
             } else if (preg_match('/\s\$([0-9]{1,10})/', $line, $match)) {
                 dump('match $850');
@@ -189,12 +191,16 @@ class Imonolit implements IProcessor
                 $params['content'] = $line;
                 ProviderLog::add($params);
             }
+
+            if (isset($products[0]['price'])) {
+                $price = (int) $products[0]['price'];
+                if (!$price) {
+                    $params['content'] = $line;
+                    ProviderLog::add($params);
+                }
+            }
         }
-        //dd($products);
-        //die();
 
-
-        //die();
         return $products;
     }
 }

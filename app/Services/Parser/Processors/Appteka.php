@@ -32,6 +32,7 @@ class Appteka implements IProcessor
         foreach ($lines as $line) {
             //$line = '11 Pro max 64 gold space green  (A-) 860-870$';
             //$line = '11 Pro max 256 green space gold (А-) 950-970$';
+            //$line = 'Used 11 Pro max 64 space/green (A/A-) 860$/820$ (акб 94+)';
             echo $line . "\n";
 
             $line = strip_tags($line);
@@ -51,6 +52,8 @@ class Appteka implements IProcessor
                     $itemsByGradePrice[0]['title'] = str_replace('(+)', '(A+)', $itemsByGradePrice[0]['title']);
                     $itemsByGradePrice[0]['title'] = str_replace('()', '(A)', $itemsByGradePrice[0]['title']);
                 }
+
+                $products = $itemsByGradePrice;
 
                 //MacBook Pro 13\" 2015 MF841 /i5/8/512gb, 352ц (A-) 700$
             } else if (preg_match('/(\)|\s|\/|\-)([0-9]{1,10}\$)/', $line, $match)) {
@@ -72,12 +75,6 @@ class Appteka implements IProcessor
                 $params['content'] = $line;
                 ProviderLog::add($params);
             }
-
-            //dd($products);
-
-        }
-
-        if (substr_count($line, 'X 256 space silver')) {
         }
 
         return $products;

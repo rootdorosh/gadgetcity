@@ -46,14 +46,14 @@ class ParserService
         //$this->splitProviderItems();
 
         $providers = [
-            'iPeople_UA',
+            'appteka',
             'imonolit',
+            'iPeople_UA',
             'swipe_ua',
             'icoolaopt',
             'ioptua',
             'SBS_Lviv',
             'apple_center_ua',
-            'appteka',
             'restarttradein',
             'iCentr_UA',
             'MrFixUa',
@@ -106,7 +106,7 @@ class ParserService
                         $match = array_filter($match, function ($value) {
                             return !empty($value);
                         });
-
+                        $firstMatch = $match[0];
                         $match = array_map(function ($value) {
                             $value = str_replace([' ', '.00', ',00'], '', $value);
                             return $value;
@@ -130,7 +130,7 @@ class ParserService
                                 'provider_id' => $providerLog->provider_id,
                                 'attributes' => [
                                     'price' => isset($match[2]) ? $match[2] : $match[1],
-                                    'title' => str_replace($match[0], '', $providerLog->content),
+                                    'title' => str_replace($firstMatch, '', $providerLog->content),
                                 ],
 
                             ];

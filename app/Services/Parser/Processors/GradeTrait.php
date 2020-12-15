@@ -84,16 +84,20 @@ trait GradeTrait
             //Xr 64gb red/space/coral/blue/red 500/480$ (А/A-)
             preg_match('/(\)|\s|\/|\-)([0-9]{1,10})\/([0-9]{1,10}\$)/', $line, $match) ||
             //11 pro max 64 space/silver A/A+ (SM) 880-890$
-            preg_match('/(\)|\s|\/|\-)([0-9]{1,10})\-([0-9]{1,10}\$)/', $line, $match)
+            preg_match('/(\)|\s|\/|\-)([0-9]{1,10})\-([0-9]{1,10}\$)/', $line, $match) ||
+            //Used 11 Pro max 64 space/green (A/A-) 860$/820$ (акб 94+)
+            preg_match('/(\)|\s|\/|\-)([0-9]{1,10})\$\/([0-9]{1,10}\$)/', $line, $match)
         ) {
-
             $products = [];
 
             $price1 = (int)$match[2];
             $price2 = (int)$match[3];
             $line = trim(str_replace($match[0], '', $line));
 
+            //$gradeVariants[] = '(A/A-)';
+
             foreach ($gradeVariants as $gradeVariant) {
+
                 if (substr_count($line, $gradeVariant)) {
                     $gradeVariantFormatted = str_replace(['(', ')'], '', $gradeVariant);
                     $grades = explode('/', $gradeVariantFormatted);
@@ -107,6 +111,8 @@ trait GradeTrait
                         'price' => $price2,
                         'title' => str_replace($gradeVariant, '('. $grades[1] .')', $line),
                     ];
+
+                    //dd($products);
 
                     return $products;
                 }
