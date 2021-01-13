@@ -27,12 +27,13 @@ class Appteka implements IProcessor
 
         $groupTitle = null;
 
-
         // title 1510$ || title 1510 $
         foreach ($lines as $line) {
             //$line = '11 Pro max 64 gold space green  (A-) 860-870$';
             //$line = '11 Pro max 256 green space gold (А-) 950-970$';
             //$line = 'Used 11 Pro max 64 space/green (A/A-) 860$/820$ (акб 94+)';
+            //$line = 'XR 64 black/red/yellow/blue (A/A-) 415/395$';
+            //$line = 'X 256 space/silver (A/A-) 460/440$';
             echo $line . "\n";
 
             $line = strip_tags($line);
@@ -46,7 +47,15 @@ class Appteka implements IProcessor
                 $line = rtrim($line, ' $') . '$';
             }
 
-            if ($itemsByGradePrice = $this->getSplitGradePrice($line)) {
+            $itemsByGradePrice = $this->getSplitGradePrice($line);
+            if (is_array($itemsByGradePrice) && empty($itemsByGradePrice)) {
+                $params['content'] = $line;
+                ProviderLog::add($params);
+                continue;
+            }
+
+            if (!empty($itemsByGradePrice)) {
+
                 if (count($itemsByGradePrice) === 1) {
                     $itemsByGradePrice[0]['title'] = str_replace('(-)', '(A-)', $itemsByGradePrice[0]['title']);
                     $itemsByGradePrice[0]['title'] = str_replace('(+)', '(A+)', $itemsByGradePrice[0]['title']);

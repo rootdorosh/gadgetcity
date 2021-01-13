@@ -18,6 +18,7 @@ trait GradeTrait
         //$line = 'Xr 64gb red/space/coral/blue/red 500$/480$ (А/A-)';
         //$line = 'Xr 64gb red/space/coral/blue/red 500/480$ (А/A-)';
         //$line = '11 pro max 64 space/silver A/A+ (SM) 880-890$';
+        //$line = 'XR 64 black/red/yellow/blue (A/A-) 415/395$';
 
         $replaceGrade = [
             '/ A)' => '/A)',
@@ -78,16 +79,42 @@ trait GradeTrait
             }
         }
 
-        if (
-            //Xr 64gb red/space/coral/blue/red 500$/480$ (А/A-)
-            preg_match('/(\)|\s|\/|\-)([0-9]{1,10}\$)\/([0-9]{1,10}\$)/', $line, $match) ||
-            //Xr 64gb red/space/coral/blue/red 500/480$ (А/A-)
-            preg_match('/(\)|\s|\/|\-)([0-9]{1,10})\/([0-9]{1,10}\$)/', $line, $match) ||
-            //11 pro max 64 space/silver A/A+ (SM) 880-890$
-            preg_match('/(\)|\s|\/|\-)([0-9]{1,10})\-([0-9]{1,10}\$)/', $line, $match) ||
-            //Used 11 Pro max 64 space/green (A/A-) 860$/820$ (акб 94+)
-            preg_match('/(\)|\s|\/|\-)([0-9]{1,10})\$\/([0-9]{1,10}\$)/', $line, $match)
-        ) {
+        $patterns = [
+            [
+                'pattern' => '/(\)|\s|\/|\-)([0-9]{1,10}\$)\/([0-9]{1,10}\$)/',
+                'example' => 'Xr 64gb red/space/coral/blue/red 500$/480$ (А/A-)',
+            ],
+            [
+                'pattern' => '/(\)|\s|\/|\-)([0-9]{1,10})\/([0-9]{1,10}\$)/',
+                'example' => 'Xr 64gb red/space/coral/blue/red 500/480$ (А/A-)',
+            ],
+            [
+                'pattern' => '/(\)|\s|\/|\-)([0-9]{1,10})\-([0-9]{1,10}\$)/',
+                'example' => '11 pro max 64 space/silver A/A+ (SM) 880-890$',
+            ],
+            [
+                'pattern' => '/(\)|\s|\/|\-)([0-9]{1,10})\$\/([0-9]{1,10}\$)/',
+                'example' => 'Used 11 Pro max 64 space/green (A/A-) 860$/820$ (акб 94+)',
+            ],
+            [
+                'pattern' => '/(\)|\s|\/|\-)([0-9]{1,10})\/([0-9]{1,10}\$)/',
+                'example' => 'XR 64 black/red/yellow/blue (A/A-) 415/395$',
+            ],
+        ];
+
+        $pattern = $example = $match = null;
+        foreach ($patterns as $item) {
+            if (preg_match($item['pattern'], $line, $match)) {
+                $example = $item['example'];
+                $pattern = $item['pattern'];
+            }
+        }
+
+        if ($example) {
+            if (!isset($match[2]) && !isset($match[3])) {
+                return [];
+            }
+
             $products = [];
 
             $price1 = (int)$match[2];
@@ -111,8 +138,6 @@ trait GradeTrait
                         'price' => $price2,
                         'title' => str_replace($gradeVariant, '('. $grades[1] .')', $line),
                     ];
-
-                    //dd($products);
 
                     return $products;
                 }

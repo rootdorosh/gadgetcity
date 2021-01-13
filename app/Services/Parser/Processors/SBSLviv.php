@@ -34,6 +34,7 @@ class SBSLviv implements IProcessor
                 continue;
             }
 
+            /*
             if (preg_match('/(\s|\-)([0-9]{1,10})$/', $line, $match)) {
 
                 $price = (int)$match[2];
@@ -54,6 +55,9 @@ class SBSLviv implements IProcessor
                     'title' => $title,
                     'price' => $price,
                 ];
+            */
+
+            if (false) {
 
             } else {
                 $params['content'] = $line;

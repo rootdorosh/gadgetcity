@@ -31,7 +31,14 @@ class ICentrUA implements IProcessor
                 continue;
             }
 
-            if ($itemsByGradePrice = $this->getSplitGradePrice($line)) {
+            $itemsByGradePrice = $this->getSplitGradePrice($line);
+            if (is_array($itemsByGradePrice) && empty($itemsByGradePrice)) {
+                $params['content'] = $line;
+                ProviderLog::add($params);
+                continue;
+            }
+
+            if (!empty($itemsByGradePrice)) {
                 $products = $itemsByGradePrice;
 
             // ——-MacBook Pro 13”——-

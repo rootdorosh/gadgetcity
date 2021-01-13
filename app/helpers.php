@@ -153,6 +153,15 @@ function str_tg_clean($string) {
     $clear_string = str_replace("  $", " $", $clear_string);
     $clear_string = str_replace(" $", " $", $clear_string);
 
+    /*
+    $clear_string = str_lreplace(' - ', '', $clear_string);
+    $clear_string = str_lreplace( ' / ', '', $clear_string);
+    $clear_string = str_lreplace( '- ', '', $clear_string);
+    $clear_string = str_lreplace( '/ ', '', $clear_string);
+    $clear_string = str_lreplace( '-', '', $clear_string);
+    $clear_string = str_lreplace( '/', '', $clear_string);
+    */
+
     return $clear_string;
 }
 
@@ -166,4 +175,12 @@ function str_lreplace($search, $replace, $subject)
     }
 
     return $subject;
+}
+
+function str_remove_spaces($string) {
+    $string = str_replace("	", " ", $string);
+    while( strpos($string,"  ")!==false){
+        $string = str_replace("  ", " ", $string);
+    }
+    return $string;
 }

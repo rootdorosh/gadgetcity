@@ -63,13 +63,15 @@ class ProviderLog extends Model
 
         if (preg_match('/(([0-9]{1,5})(gb))/', $line, $match)) {
             $provider = Provider::find($attributes['provider_id']);
-            (new ParserService)->parseProviderItem($provider, [
-                'attributes' => [
-                    'price' => 0,
-                    'title' => str_tg_clean($attributes['content']),
-                ],
-                'price_time' => $attributes['message_time'],
-            ]);
+            foreach ((new ParserService)->getSplitProductsByColor($line) as $title) {
+                (new ParserService)->parseProviderItem($provider, [
+                    'attributes' => [
+                        'price' => 0,
+                        'title' => $title,
+                    ],
+                    'price_time' => $attributes['message_time'],
+                ]);
+            }
             return null;
         } else {
             $values = ['16', '32', '64', '128', '256', '512', '1024', '2048', '4096'];
@@ -77,13 +79,15 @@ class ProviderLog extends Model
                 if (substr_count($line, $value)) {
                     $provider = Provider::find($attributes['provider_id']);
                     if (in_array($provider->pid, ['swipe_ua', 'ioptua'])) {
-                        (new ParserService)->parseProviderItem($provider, [
-                            'attributes' => [
-                                'price' => 0,
-                                'title' => str_tg_clean($attributes['content']),
-                            ],
-                            'price_time' => $attributes['message_time'],
-                        ]);
+                        foreach ((new ParserService)->getSplitProductsByColor($line ) as $title) {
+                            (new ParserService)->parseProviderItem($provider, [
+                                'attributes' => [
+                                    'price' => 0,
+                                    'title' => $title,
+                                ],
+                                'price_time' => $attributes['message_time'],
+                            ]);
+                        }
                         return null;
                     }
                 }

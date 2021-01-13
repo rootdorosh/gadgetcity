@@ -46,13 +46,13 @@ class ParserService
         //$this->splitProviderItems();
 
         $providers = [
+            'ioptua',
+            'SBS_Lviv',
             'appteka',
             'imonolit',
             'iPeople_UA',
             'swipe_ua',
             'icoolaopt',
-            'ioptua',
-            'SBS_Lviv',
             'apple_center_ua',
             'restarttradein',
             'iCentr_UA',
@@ -178,6 +178,7 @@ class ParserService
     {
         $title = str_replace(["\t", "\n", "\r"], "", $title);
 
+
         $colorsTitleVariants = $this->getColorsVariants();
         $doubleColors = $this->getDoubleColors();
         foreach ($doubleColors as $k => $v) {
@@ -185,8 +186,10 @@ class ParserService
         }
         $title = str_ireplace(array_keys($colorsTitleVariants), $colorsTitleVariants, $title);
         $colors = $this->getColors();
-        // replace gold/green/space => gold/green/space
-        // replace gold / green / space => gold/green/space
+
+        foreach ($colors as $colorOne) {
+            $title = str_replace(ucfirst($colorOne), $colorOne, $title);
+        }
 
         foreach ($colors as $colorOne) {
             foreach ($colors as $colorTwo) {
@@ -202,7 +205,6 @@ class ParserService
         preg_match_all($pattern, $title, $match);
 
         if (!empty($match[1])) {
-            //dump($match);
             foreach ($match[1] as $i=>$matchVal) {
                 if ($matchVal === 'mat' && substr_count($title, 'matte')) {
                     $match[1][$i] = 'matte';
@@ -256,6 +258,7 @@ class ParserService
     public function saveProviderProducts(Provider $provider, array $products)
     {
         foreach ($products as $product) {
+            $product['attributes']['title'] = str_tg_clean($product['attributes']['title']);
 
             if (empty($product['attributes']['title']) ||
                 strlen($product['attributes']['title']) > 190 ||
@@ -439,14 +442,13 @@ class ParserService
         try {
             foreach ($xml->messages->message as $item) {
                 array_unshift($data, [
-                    'content' => (string) $item->content,
+                    'content' => (string) str_remove_spaces($item->content),
                     'guid' => (int) $item->id,
                     'price_time' => (int) $item->time,
                     'date' => date('Y-m-d', (int)$item->time),
                 ]);
             }
         } catch (\Exception $e) {
-            dump($content);
             dump($e->getMessage());
         }
 
@@ -505,6 +507,7 @@ class ParserService
             foreach ($colors as $colorTwo) {
                 $data[",{$colorFirst} /{$colorTwo}"] = ", {$colorFirst}/{$colorTwo}";
                 $data["{$colorFirst} /{$colorTwo}"] = "{$colorFirst}/{$colorTwo}";
+                $data["{$colorFirst}/{$colorTwo}"] = "{$colorFirst}/{$colorTwo}";
             }
         }
         return $data;
