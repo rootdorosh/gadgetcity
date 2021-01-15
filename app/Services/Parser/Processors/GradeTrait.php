@@ -98,7 +98,8 @@ trait GradeTrait
             ],
             [
                 'pattern' => '/(\)|\s|\/|\-)([0-9]{1,10})\/([0-9]{1,10}\$)/',
-                'example' => 'XR 64 black/red/yellow/blue (A/A-) 415/395$',
+                //'example' => 'XR 64 black/red/yellow/blue (A/A-) 415/395$',
+                'example' => 'X 256 space/silver (A/A-) 460/440$',
             ],
         ];
 
@@ -138,33 +139,35 @@ trait GradeTrait
                         'price' => $price2,
                         'title' => str_replace($gradeVariant, '('. $grades[1] .')', $line),
                     ];
-
-                    return $products;
                 }
             }
 
-            foreach ($gradeVariantsTwo as $gradeVariant) {
-                if (substr_count($line, $gradeVariant)) {
-                    $grades = explode('/', $gradeVariant);
+            if (empty($products)) {
+                foreach ($gradeVariantsTwo as $gradeVariant) {
+                    if (substr_count($line, $gradeVariant)) {
+                        $grades = explode('/', $gradeVariant);
 
-                    $products[] = [
-                        'price' => $price1,
-                        'title' => str_replace($gradeVariant, $grades[0], $line),
-                    ];
+                        $products[] = [
+                            'price' => $price1,
+                            'title' => str_replace($gradeVariant, $grades[0], $line),
+                        ];
 
-                    $products[] = [
-                        'price' => $price2,
-                        'title' => str_replace($gradeVariant, $grades[1], $line),
-                    ];
+                        $products[] = [
+                            'price' => $price2,
+                            'title' => str_replace($gradeVariant, $grades[1], $line),
+                        ];
 
-                    return $products;
+                        return $products;
+                    }
                 }
             }
 
-            $products[] = [
-                'title' => $line,
-                'price' => $price1,
-            ];
+            if (empty($products)) {
+                $products[] = [
+                    'title' => $line,
+                    'price' => $price1,
+                ];
+            }
 
             return $products;
         }

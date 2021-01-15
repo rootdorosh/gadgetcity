@@ -46,9 +46,9 @@ class ParserService
         //$this->splitProviderItems();
 
         $providers = [
+            'appteka',
             'ioptua',
             'SBS_Lviv',
-            'appteka',
             'imonolit',
             'iPeople_UA',
             'swipe_ua',

@@ -34,6 +34,7 @@ class Appteka implements IProcessor
             //$line = 'Used 11 Pro max 64 space/green (A/A-) 860$/820$ (акб 94+)';
             //$line = 'XR 64 black/red/yellow/blue (A/A-) 415/395$';
             //$line = 'X 256 space/silver (A/A-) 460/440$';
+            //$line = 'X 256 space/silver (A/A-) 460/440$';
             echo $line . "\n";
 
             $line = strip_tags($line);
