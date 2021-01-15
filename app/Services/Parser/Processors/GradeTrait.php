@@ -111,12 +111,12 @@ trait GradeTrait
             }
         }
 
+        $products = [];
+
         if ($example) {
             if (!isset($match[2]) && !isset($match[3])) {
                 return [];
             }
-
-            $products = [];
 
             $price1 = (int)$match[2];
             $price2 = (int)$match[3];
@@ -142,7 +142,7 @@ trait GradeTrait
                 }
             }
 
-            if (empty($products)) {
+            if (count($products) === 0) {
                 foreach ($gradeVariantsTwo as $gradeVariant) {
                     if (substr_count($line, $gradeVariant)) {
                         $grades = explode('/', $gradeVariant);
@@ -156,13 +156,11 @@ trait GradeTrait
                             'price' => $price2,
                             'title' => str_replace($gradeVariant, $grades[1], $line),
                         ];
-
-                        return $products;
                     }
                 }
             }
 
-            if (empty($products)) {
+            if (count($products) === 0) {
                 $products[] = [
                     'title' => $line,
                     'price' => $price1,

@@ -35,7 +35,6 @@ class Appteka implements IProcessor
             //$line = 'XR 64 black/red/yellow/blue (A/A-) 415/395$';
             //$line = 'X 256 space/silver (A/A-) 460/440$';
             //$line = 'X 256 space/silver (A/A-) 460/440$';
-            echo $line . "\n";
 
             $line = strip_tags($line);
             $line = trim($line);
@@ -54,7 +53,6 @@ class Appteka implements IProcessor
                 ProviderLog::add($params);
                 continue;
             }
-
             if (!empty($itemsByGradePrice)) {
 
                 if (count($itemsByGradePrice) === 1) {
@@ -63,7 +61,7 @@ class Appteka implements IProcessor
                     $itemsByGradePrice[0]['title'] = str_replace('()', '(A)', $itemsByGradePrice[0]['title']);
                 }
 
-                $products = $itemsByGradePrice;
+                $products = array_merge($products, $itemsByGradePrice);
 
                 //MacBook Pro 13\" 2015 MF841 /i5/8/512gb, 352ц (A-) 700$
             } else if (preg_match('/(\)|\s|\/|\-)([0-9]{1,10}\$)/', $line, $match)) {

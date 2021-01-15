@@ -39,7 +39,7 @@ class ICentrUA implements IProcessor
             }
 
             if (!empty($itemsByGradePrice)) {
-                $products = $itemsByGradePrice;
+                $products = array_merge($products, $itemsByGradePrice);
 
             // ——-MacBook Pro 13”——-
             } elseif (preg_match('/\—\—\-(.*?)\—\—\-/', $line, $match)) {

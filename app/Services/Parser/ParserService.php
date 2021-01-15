@@ -303,10 +303,8 @@ class ParserService
             ->where('title', $product['attributes']['title'])
             ->first();
 
-        //dump($product['attributes']['title']);
-
-
-        if (substr_count($product['attributes']['title'], 'MJLQ2')) {
+        if (substr_count($product['attributes']['title'], 'X 256 space')) {
+            dump($product['attributes']['title']);
         }
 
         if (!$providerItem) {
@@ -391,6 +389,7 @@ class ParserService
         }
 
         foreach ($posts as $post) {
+
             foreach ($this->postParse((new $clsProcessor), $post, $provider) as $item) {
                 $products[] = [
                     'attributes' => $item,
@@ -537,7 +536,6 @@ class ParserService
         ProviderItem::whereRaw("title LIKE '%А%'")->chunk(100, function ($items) {
             foreach ($items as $item) {
                 $title = $string = preg_replace('/[[:^print:][а-яА-Я]/', '', $item->title);
-                echo "$title : $item->title\n";
 
                if (mb_substr_count($item->title, 'А', 'UTF-8')) {
 
@@ -546,9 +544,6 @@ class ParserService
 
                        $item->title = replate_to_letter_a($item->title);
                        $item->save();
-
-                       echo $item->title . "\n";
-                       echo $item->id . "\n";
                    }
                }
             }
