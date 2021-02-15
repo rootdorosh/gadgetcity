@@ -87,6 +87,8 @@ class ParserService
 
     public function applyCustomTemplates()
     {
+        return;
+
         $patterns = Pattern::orderBy('rank')->get();
 
         $idsToRemove = [];
