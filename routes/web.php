@@ -15,6 +15,9 @@ use App\Modules\Parser\Models\RestaurantItem;
 */
 
 Route::get('', ['as' => 'index', 'uses' => 'HomeController@index']);
+Route::get('/pattern', function () {
+    (new \App\Services\Parser\ParserService())->applyCustomTemplatesTest(request()->get('t'));
+});
 
 Route::get('flush', function() {
     $item = RestaurantItem::where('id', 1)->first();

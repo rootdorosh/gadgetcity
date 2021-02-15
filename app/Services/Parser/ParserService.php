@@ -46,6 +46,7 @@ class ParserService
         //$this->splitProviderItems();
 
         $providers = [
+            'iCentr_UA',
             'appteka',
             'ioptua',
             'SBS_Lviv',
@@ -55,7 +56,6 @@ class ParserService
             'icoolaopt',
             'apple_center_ua',
             'restarttradein',
-            'iCentr_UA',
             'MrFixUa',
             'ByryndychokApple',
             'ilovephoneopt',
@@ -149,6 +149,50 @@ class ParserService
         if (!empty($idsToRemove)) {
             ProviderLog::destroy($idsToRemove);
         }
+    }
+
+    public function applyCustomTemplatesTest(string $content)
+    {
+        $patterns = Pattern::orderBy('rank')->get();
+
+        $idsToRemove = [];
+        $data = [];
+        $hasMatch = false;
+        foreach ($patterns as $pattern) {
+            if ($hasMatch) {
+                continue;
+            }
+            preg_match($pattern->pattern, $content, $match);
+
+            if (!empty($match)) {
+
+                dump($match);
+                dd($pattern->pattern);
+
+                $match = array_unique($match);
+                $match = array_values($match);
+                $match = array_filter($match, function ($value) {
+                    return !empty($value);
+                });
+                $firstMatch = $match[0];
+                $match = array_map(function ($value) {
+                    $value = str_replace([' ', '.00', ',00'], '', $value);
+                    return $value;
+
+                }, $match);
+                $prices = array_filter($match, function ($value) {
+                    return is_numeric($value);
+                });
+                $price = min($prices);
+
+                if ($price) {
+
+                    $hasMatch = true;
+
+                }
+            }
+        }
+
     }
 
     public function splitProviderItems()
