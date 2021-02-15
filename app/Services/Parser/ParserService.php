@@ -87,8 +87,6 @@ class ParserService
 
     public function applyCustomTemplates()
     {
-        return;
-
         $patterns = Pattern::orderBy('rank')->get();
 
         $idsToRemove = [];
@@ -153,17 +151,11 @@ class ParserService
         }
     }
 
-    public function applyCustomTemplatesTest(string $content)
+    public function applyCustomTemplatesSingle(string $content)
     {
         $patterns = Pattern::orderBy('rank')->get();
 
-        $idsToRemove = [];
-        $data = [];
-        $hasMatch = false;
         foreach ($patterns as $pattern) {
-            if ($hasMatch) {
-                continue;
-            }
             preg_match($pattern->pattern, $content, $match);
 
             if (!empty($match)) {
@@ -183,30 +175,16 @@ class ParserService
                 });
                 $price = min($prices);
 
-                $data = [];
                 if ($price) {
-
-                    $hasMatch = true;
-
-                    $data = [
-                        //'pattern' => $pattern->value,
-                        //'match' => $match,
-                        //'origin' => $providerLog->content,
-                        'attributes' => [
-                            'price' => isset($match[2]) ? $match[2] : $match[1],
-                            'title' => str_replace($firstMatch, '', $content),
-                        ],
+                    return [
+                        'price' => isset($match[2]) ? $match[2] : $match[1],
+                        'title' => str_replace($firstMatch, '', $content),
                     ];
                 }
-
-                dump($match);
-                dump($pattern->value);
-                dump($data);
-                dd($pattern->pattern);
-
             }
         }
 
+        return null;
     }
 
     public function splitProviderItems()
