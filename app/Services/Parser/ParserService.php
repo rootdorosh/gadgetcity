@@ -167,6 +167,7 @@ class ParserService
             if (!empty($match)) {
 
                 dump($match);
+                dump($pattern->value);
                 dd($pattern->pattern);
 
                 $match = array_unique($match);
