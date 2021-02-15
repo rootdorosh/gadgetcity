@@ -165,11 +165,6 @@ class ParserService
             preg_match($pattern->pattern, $content, $match);
 
             if (!empty($match)) {
-
-                dump($match);
-                dump($pattern->value);
-                dd($pattern->pattern);
-
                 $match = array_unique($match);
                 $match = array_values($match);
                 $match = array_filter($match, function ($value) {
@@ -186,11 +181,27 @@ class ParserService
                 });
                 $price = min($prices);
 
+                $data = [];
                 if ($price) {
 
                     $hasMatch = true;
 
+                    $data = [
+                        //'pattern' => $pattern->value,
+                        //'match' => $match,
+                        //'origin' => $providerLog->content,
+                        'attributes' => [
+                            'price' => isset($match[2]) ? $match[2] : $match[1],
+                            'title' => str_replace($firstMatch, '', $content),
+                        ],
+                    ];
                 }
+
+                dump($match);
+                dump($pattern->value);
+                dump($data);
+                dd($pattern->pattern);
+
             }
         }
 
