@@ -60,17 +60,20 @@ class ProviderLog extends Model
     public static function add(array $attributes):? self
     {
         $line = str_tg_clean($attributes['content']);
-        $formCustom = (new ParserService)->applyCustomTemplatesSingle($attributes['content']);
+        $formCustom = (new ParserService)->applyCustomTemplatesSingle($line);
         if ($formCustom) {
             $provider = Provider::find($attributes['provider_id']);
 
-            (new ParserService)->parseProviderItem($provider, [
-                'attributes' => [
-                    'price' => $formCustom['price'],
-                    'title' => $formCustom['title'],
-                ],
-                'price_time' => $attributes['message_time'],
-            ]);
+            foreach ((new ParserService)->getSplitProductsByColor($formCustom['title']) as $title) {
+                (new ParserService)->parseProviderItem($provider, [
+                    'attributes' => [
+                        'price' => $formCustom['price'],
+                        'title' => $title,
+                    ],
+                    'price_time' => $attributes['message_time'],
+                ]);
+            }
+            return null;
         }
 
         if (preg_match('/(([0-9]{1,5})(gb))/', $line, $match)) {
